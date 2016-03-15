@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Node</title>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+</head>
+<body>
+
+<label for="msg">Bericht:</label>
+<input type="text" id="msg">
+<button id="myButton">Send</button>
+
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script>
+    var socket = io.connect("http://localhost:8000");
+
+    socket.on("servermessage", function (data) {
+        alert(data);
+    });
+
+    $(window).on('beforeunload', function () {
+        socket.close();
+    });
+
+    $('#myButton').click(function () {
+        var message = $('#msg').val();
+        socket.emit("clientmessage", message);
+    });
+</script>
+</body>
+</html>
