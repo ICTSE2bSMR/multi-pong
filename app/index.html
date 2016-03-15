@@ -12,11 +12,27 @@
 <button id="myButton">Send</button>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="pong.js"></script>
+<script src="player.js"></script>
 <script>
     var socket = io.connect("http://localhost:8000");
 
+
+
+    var game;
+    var player = new Player("player", 1, [{'x': 50, 'y': 100}, {'x': 50, 'y': 200}] , "shape");
+
+    socket.emit("newplayer", "hello");
+
+    socket.on("servernewplayer", function(data) {
+        //TODO let new player join current game
+    });
+
+
+
     socket.on("servermessage", function (data) {
-        alert(data);
+        console.log(data);
+        game = JSON.parse(data);
     });
 
     $(window).on('beforeunload', function () {
@@ -25,7 +41,8 @@
 
     $('#myButton').click(function () {
         var message = $('#msg').val();
-        socket.emit("clientmessage", message);
+        console.log(message);
+        socket.emit("clientmessage", game);
     });
 </script>
 </body>

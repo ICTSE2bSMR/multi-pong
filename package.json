@@ -1,0 +1,28 @@
+{
+  "name": "multi-pong",
+  "version": "0.0.1",
+  "description": "A multiplayer pong game with nodejs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ICTSE2bSMR/multi-pong.git"
+  },
+  "keywords": [
+    "nodejs",
+    "pong",
+    "multiplayer"
+  ],
+  "author": "ICTSE2bSMR",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ICTSE2bSMR/multi-pong/issues"
+  },
+  "homepage": "https://github.com/ICTSE2bSMR/multi-pong#readme",
+  "dependencies": {
+    "socket.io": "^1.4.5"
+  }
+}
