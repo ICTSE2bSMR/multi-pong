@@ -19,20 +19,31 @@
 
 
 
-    var game;
+    var game = new Pong();
     var player = new Player("player", 1, [{'x': 50, 'y': 100}, {'x': 50, 'y': 200}] , "shape");
 
     socket.emit("newplayer", "hello");
 
     socket.on("servernewplayer", function(data) {
-        //TODO let new player join current game
+        if(data === null){
+            console.log("is null... creating new game");
+            game = new Pong();
+        } else {
+            console.log("is not null");
+            game.players = data.players;
+            game.nextId = data.nextId;
+        }
+        game.addPlayer(player);
+
+        socket.emit("clientmessage", game);
     });
 
 
 
     socket.on("servermessage", function (data) {
         console.log(data);
-        game = JSON.parse(data);
+        game.players = data.players;
+        game.nextId = data.nextId;
     });
 
     $(window).on('beforeunload', function () {

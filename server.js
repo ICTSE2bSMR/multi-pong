@@ -51,18 +51,25 @@ function urlRequest(url, response) {
 }
 
 var ios = socket.listen(server);
+var game = null;
 
 ios.sockets.on("connection", function(socket) {
-    console.log("Player connected: ", socket.id);
-    var game = null;
+
+    socket.on("disconnect", function() {
+        console.log("Player disconnected: ", socket.id);
+    });
+
     socket.on("clientmessage", function(data) {
-        console.log(socket.id, ": ", data);
+        //console.log(socket.id, ": ", data);
         game = data;
+        //console.log(game);
         socket.broadcast.emit("servermessage", data);
     });
 
-    socket.on("newplayer", function(data) {
+    socket.on("newplayer", function() {
+        console.log("Player connected: ", socket.id);
         if(ios.sockets.connected[socket.id]) {
+            console.log("sending info to new player...", game);
             ios.sockets.connected[socket.id].emit('servernewplayer', game);
         }
     });
