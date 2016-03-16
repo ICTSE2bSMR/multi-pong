@@ -1,3 +1,5 @@
+# Netbeans project folder
+nbproject
 # Webstorm project folder
 .idea
 # Logs
@@ -34,3 +36,4 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+/nbproject/private/
