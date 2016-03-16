@@ -39,7 +39,12 @@ function urlRequest(url, response) {
                     response.writeHead(500);
                     response.end();
                 } else {
-                    response.writeHead(200, { "Content-Type": "text/html" });
+                    var ext = url.split(".")[1];
+                    if(ext !== undefined) {
+                        response.writeHead(200, {"Content-Type": "text/" + ext});
+                    } else {
+                        response.writeHead(200, {"Content-Type": "text/html"});
+                    }
                     response.end(content, "utf-8");
                 }
             });
