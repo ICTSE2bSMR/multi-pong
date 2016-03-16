@@ -14,5 +14,10 @@ Projectile.prototype.getWidthHeight = function() {
 
 Projectile.prototype.draw = function(context) {
     //TODO drawing logic here
+    context.fillStyle = "#000000";
+    context.fillRect(this.position.x, this.position.y, this.radius*2, this.radius*2);
+};
 
+Projectile.revive = function(json) {
+    return new Projectile(json.radius, json.speed, json.position);
 };

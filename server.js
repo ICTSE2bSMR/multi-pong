@@ -60,6 +60,11 @@ var game = null;
 
 ios.sockets.on("connection", function(socket) {
 
+    socket.on("disconnecting", function(data) {
+        game = data;
+        socket.broadcast.emit("servermessage", game);
+    });
+
     socket.on("disconnect", function() {
         console.log("Player disconnected: ", socket.id);
     });

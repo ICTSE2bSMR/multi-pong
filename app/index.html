@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<canvas id="pong"></canvas>
+<canvas id="pong" width="400" height="400"></canvas>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="pong.js"></script>
@@ -17,25 +17,27 @@
     var socket = io.connect("http://localhost:8000");
 
 
-
-    var game = new Pong();
-    var ball = new Projectile(2, 5, {"x": 200, "y": 200});
-    game.projectile = ball;
-    var player = new Player("player", 1, {"x": 0, "y": 100}, {"width": 20, "height": 75} , "shape", "#FF0000");
     var canvas = document.getElementById("pong");
+    var game = new Pong(canvas);
+    var ball = new Projectile(5, 5, {"x": 200, "y": 200});
+    var player = new Player("player", 1, {"x": 0, "y": 100}, {"width": 20, "height": 75} , "shape", "#FF0000");
 
 
-    console.log(player.color >> 20);
     socket.emit("newplayer", "hello");
 
     socket.on("servernewplayer", function(data) {
         if(data === null){
-            console.log("is null... creating new game");
-            game = new Pong();
+//            console.log("is null... creating new game");
+            game = new Pong(canvas);
+            game.projectile = ball;
         } else {
-            console.log("is not null");
-            game.players = data.players;
+//            console.log("is not null...");
+            for(var i = 0; i < data.players.length; i++) {
+                game.players.push(Player.revive(data.players[i]));
+            }
             game.nextId = data.nextId;
+            game.projectile = Projectile.revive(data.projectile);
+            game.canvas = canvas;
         }
         game.addPlayer(player);
 
@@ -51,6 +53,8 @@
     });
 
     $(window).on('beforeunload', function () {
+        game.removePlayer(player);
+        socket.emit("disconnecting", game);
         socket.close();
     });
 

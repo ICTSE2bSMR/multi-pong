@@ -14,7 +14,13 @@ var Player = function(name, side, position, size, shape, color) {
 
 Player.prototype.draw = function(context) {
     // TODO drawing logic here
-    console.log("Drawing player ", this.gameID, " width: ", this.size["width"]);
+    //console.log("Drawing player ", this.gameID, " width: ", this.size["width"]);
     context.fillStyle = this.color;
     context.fillRect(this.position.x, this.position.y, this.size.width, this.size.height);
+};
+
+Player.revive = function(json){
+    var newPlayer = new Player(json.name, json.side, json.position, json.size, json.shape, json.color);
+    newPlayer.gameID = json.gameID;
+    return newPlayer;
 };
