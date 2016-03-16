@@ -21,8 +21,12 @@ Pong.prototype.removePlayer = function(player) {
 
 Pong.prototype.draw = function(canvas) {
     // TODO clear canvas
-    for(var i = 0; i < this.players.length; i++)
-        this.players[i].draw(canvas);
+    console.log("Drawing...");
+    var ctx = canvas.getContext("2d");
+    for(var i = 0; i < this.players.length; i++) {
+        console.log(this.players[i]);
+        this.players[i].draw(ctx);
+    }
 
-    this.projectile.draw(canvas);
+    this.projectile.draw(ctx);
 };

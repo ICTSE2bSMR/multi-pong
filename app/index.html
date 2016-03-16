@@ -7,21 +7,25 @@
 </head>
 <body>
 
-<label for="msg">Bericht:</label>
-<input type="text" id="msg">
-<button id="myButton">Send</button>
+<canvas id="pong" width="400" height="400" style="border:1px solid #c3c3c3;"></canvas>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="pong.js"></script>
 <script src="player.js"></script>
+<script src="projectile.js"></script>
 <script>
     var socket = io.connect("http://localhost:8000");
 
 
 
     var game = new Pong();
-    var player = new Player("player", 1, [{'x': 50, 'y': 100}, {'x': 50, 'y': 200}] , "shape");
-    
+    var ball = new Projectile(2, 5, {"x": 200, "y": 200});
+    game.projectile = ball;
+    var player = new Player("player", 1, {"x": 0, "y": 100}, {"width": 20, "height": 75} , "shape", "#FF0000");
+    var canvas = document.getElementById("pong");
+
+
+    console.log(player.color >> 20);
     socket.emit("newplayer", "hello");
 
     socket.on("servernewplayer", function(data) {
@@ -35,10 +39,10 @@
         }
         game.addPlayer(player);
 
+        game.draw(canvas);
+
         socket.emit("clientmessage", game);
     });
-
-
 
     socket.on("servermessage", function (data) {
         console.log(data);
@@ -50,11 +54,13 @@
         socket.close();
     });
 
-    $('#myButton').click(function () {
-        var message = $('#msg').val();
-        console.log(message);
-        socket.emit("clientmessage", game);
-    });
+//    $('#myButton').click(function () {
+//        var message = $('#msg').val();
+//        console.log(message);
+//        socket.emit("clientmessage", game);
+//    });
+
+
 </script>
 </body>
 </html>

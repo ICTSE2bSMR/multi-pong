@@ -12,6 +12,7 @@ Projectile.prototype.getWidthHeight = function() {
     return this.radius*2;
 };
 
-Projectile.prototype.draw = function(canvas) {
+Projectile.prototype.draw = function(context) {
     //TODO drawing logic here
+
 };
