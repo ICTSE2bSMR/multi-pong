@@ -21,7 +21,7 @@
 
     var game = new Pong();
     var player = new Player("player", 1, [{'x': 50, 'y': 100}, {'x': 50, 'y': 200}] , "shape");
-
+    
     socket.emit("newplayer", "hello");
 
     socket.on("servernewplayer", function(data) {

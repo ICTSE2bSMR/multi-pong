@@ -4,6 +4,7 @@
 
 var Pong = function() {
     this.players = [];
+    this.projectile = null;
     this.nextId = -1;
 };
 
@@ -16,4 +17,12 @@ Pong.prototype.removePlayer = function(player) {
     this.players = this.players.filter(function(p) {
         return p.gameID !== player.gameID;
     });
+};
+
+Pong.prototype.draw = function(canvas) {
+    // TODO clear canvas
+    for(var i = 0; i < this.players.length; i++)
+        this.players[i].draw(canvas);
+
+    this.projectile.draw(canvas);
 };

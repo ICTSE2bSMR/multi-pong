@@ -10,3 +10,7 @@ var Player = function(name, side, position, shape) {
     // position could look like: [{'x': 50, 'y' 100}] depending on the shape
     this.position = position;
 };
+
+Player.prototype.draw = function(canvas) {
+    // TODO drawing logic here
+};
