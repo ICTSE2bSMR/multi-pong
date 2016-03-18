@@ -8,7 +8,36 @@ and open the template in the editor.
     Author     : Mark
 */
 
-canvas{
+#splash{
     width: 98%;
     height: 100%;
+    text-align: center;
+
+}
+
+#header{
+    font-family: "Orbitron", monospace;
+    font-size: 3em;
+    margin-bottom: 40px;
+    display: block;
+
+}
+
+#info{
+    font-family: "Inconsolata", monospace;
+    font-size: 2em;
+}
+
+
+#splash_img{
+    width: 50%;
+}
+
+.selected{
+    border: solid gold 2px;
+    clear: both;
+}
+
+ul{
+    list-style: none;
 }

@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>Splash - Multiplayer Pong</title>
+        <title>Multiplayer - Pong</title>
         <meta charset="windows-1252">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
@@ -15,53 +15,54 @@ and open the template in the editor.
         <link href="splashCSS.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <section>
-            <canvas id="myCanvas">
-            </canvas>
-        </section>
+        <div id="splash">
+            <span id="header">Multiplayer - Pong</span><br>
+            <img id="splash_img" src="images/splashPong.png" alt="splash"><br>
+            <span id="info">Press space to continue...</span>
+        </div>
+
 
         <script>
-//            var gamestate = "splash";
-//            window.addEventListener('keydown', this.doKeyDown, false);
-            var canvas = document.getElementById("myCanvas");
+            var gamestate = "splash";
+            window.addEventListener('keydown', this.doKeyDown, false);
+            var menuHTML = "<div id='splash'><span id='header'>Multiplayer - Pong</span><br><ul><li class='selected'>Play</li><li>Settings</li><li>Highscores</li></ul></div>";
 
-            var splashImage = document.createElement("img");
-            jQuery('img').attr("src", "Images/splashPong.png");
+            function onGamestateChange(gamestate) {
+                alert("ik ben er");
+                switch (gamestate) {
+                    case "menu":
+                        document.body.innerHTML = menuHTML;
+                        break;
+                    case "lobby":
 
-
-
-
-            function drawCanvas(canvas) {
-                var ctx = canvas.getContext('2d');
-                ctx.font = "10px monospace";
-                ctx.textAlign = "center";
-                ctx.fillText("press spacebar to continue...", canvas.width / 2, canvas.height / 4 * 3);
-                ctx.drawImage(splashImage, 500, 500);
-//                var img = new Image();
-//                img.src = "Images/splashPong.png";
-//                img.onload = function () {
-//                    ctx = document.getElementById("myCanvas").getContext('2d');
-//
-//                    ctx.drawImage(this.img, 500, 500);
-//                };
-
+                        break;
+                }
             }
             ;
 
+            function clearBody() {
+                document.body.innerHTML = "";
+            }
 
 
-            splashImage.onload = drawCanvas(canvas);
 
+            function doKeyDown(e) {
 
-//
-//            function doKeyDown(e) {
-//                //Keycode 32 = the spacebar, if it is pressed the player, will continue to the menu screen.
-//                if (e.keyCode === 32) {
-//                    clearCanvas();
-//                    //link to menu
-//                    gamestate = "menu";
-//                }
-//            }
+                //check if document is ready.
+                //Keycode 32 = the spacebar, if it is pressed the player, will continue to the menu screen.
+                if (gamestate === "splash") {
+                    if (e.keyCode === 32) {
+                        clearBody();
+                        document.body.innerHTML = '';
+                        //link to menu
+                        gamestate = "menu";
+                        onGamestateChange(gamestate);
+
+                    }
+                }
+
+            }
+
 
         </script>
 
