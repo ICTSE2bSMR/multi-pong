@@ -9,15 +9,61 @@ and open the template in the editor.
         <title>Splash - Multiplayer Pong</title>
         <meta charset="windows-1252">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
         <link href='https://fonts.googleapis.com/css?family=Orbitron:500' rel='stylesheet' type='text/css'>
         <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
         <link href="splashCSS.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <div class="splash">
-            <header>Multiplayer Pong</header>
-            <img src="images/splashPong.png" alt="SplashPongImage">
-            <span>press space to continue...</span>
-        </div>
+        <section>
+            <canvas id="myCanvas">
+            </canvas>
+        </section>
+
+        <script>
+//            var gamestate = "splash";
+//            window.addEventListener('keydown', this.doKeyDown, false);
+            var canvas = document.getElementById("myCanvas");
+
+            var splashImage = document.createElement("img");
+            jQuery('img').attr("src", "Images/splashPong.png");
+
+
+
+
+            function drawCanvas(canvas) {
+                var ctx = canvas.getContext('2d');
+                ctx.font = "10px monospace";
+                ctx.textAlign = "center";
+                ctx.fillText("press spacebar to continue...", canvas.width / 2, canvas.height / 4 * 3);
+                ctx.drawImage(splashImage, 500, 500);
+//                var img = new Image();
+//                img.src = "Images/splashPong.png";
+//                img.onload = function () {
+//                    ctx = document.getElementById("myCanvas").getContext('2d');
+//
+//                    ctx.drawImage(this.img, 500, 500);
+//                };
+
+            }
+            ;
+
+
+            splashImage.onload = drawCanvas(canvas);
+
+
+//
+//            function doKeyDown(e) {
+//                //Keycode 32 = the spacebar, if it is pressed the player, will continue to the menu screen.
+//                if (e.keyCode === 32) {
+//                    clearCanvas();
+//                    //link to menu
+//                    gamestate = "menu";
+//                }
+//            }
+
+        </script>
+
+
     </body>
 </html>
