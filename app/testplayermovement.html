@@ -27,12 +27,16 @@
             //Initial starting position of the player, var y will also be used for movement of the player.
             var y = (width[0] / 2) - (playerheight / 2);
 
-            balletje = new Projectile(10, 2, {"x": 100, "y": 100});
+            balletje = new Projectile(10, {"dx": 2, "dy": 2}, {"x": 100, "y": 100});
             balletje.draw(ctx);
 
             player1 = new Player();
             player1.position = {"x": 0, "y": y};
             player1.size = {"width": 20, "height": playerheight};
+
+            player2 = new Player();
+            player2.position = {"x": (c.width - 20), "y": y};
+            player2.size = {"width": 20, "height": playerheight};
 
             function clearCanvas() {
                 ctx.clearRect(0, 0, c.width, c.height);
@@ -42,13 +46,26 @@
                 //Keycode 40 = the arrowdown key, if it is pressed the player, obviously, will move down.
                 //There is also a check to prevent the player from leaving the playing field.
                 if (e.keyCode === 40) {
+                    if (player2.position.y >= c.height - player2.size.height) {
+                        player2.position.y = c.height - player2.size.height;
+                    } else {
+                        player2.position.y = player2.position.y + 10;
+                    }
+                    //Keycode 38 = the arrowup key, if it is pressed the player, obviously, will move up.
+                } else if (e.keyCode === 38) {
+                    if (player2.position.y <= 0) {
+                        player2.position.y = 0;
+                    } else {
+                        player2.position.y = player2.position.y - 10;
+                    }
+                }
+                if (e.keyCode === 83) {
                     if (player1.position.y >= c.height - player1.size.height) {
                         player1.position.y = c.height - player1.size.height;
                     } else {
                         player1.position.y = player1.position.y + 10;
                     }
-                    //Keycode 38 = the arrowup key, if it is pressed the player, obviously, will move up.
-                } else if (e.keyCode === 38) {
+                } else if (e.keyCode === 87) {
                     if (player1.position.y <= 0) {
                         player1.position.y = 0;
                     } else {
@@ -59,7 +76,9 @@
 
             function mainLoop() {
                 clearCanvas();
+                balletje.move(c, [player1, player2]);
                 player1.draw(ctx);
+                player2.draw(ctx);
                 balletje.draw(ctx);
                 requestAnimationFrame(mainLoop);
             }

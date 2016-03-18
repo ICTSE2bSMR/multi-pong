@@ -51,6 +51,53 @@ Projectile.prototype.draw = function (context) {
 Projectile.revive = function (json) {
     return new Projectile(json.radius, json.speed, json.position);
 };
-Projectile.prototype.move = function (context) {
 
+Projectile.prototype.move = function (canvas, players) {
+    this.position.x += this.speed.dx;
+    this.position.y += this.speed.dy;
+
+    if (this.position.y <= 0) {
+        this.position.y = 0;
+        // leave current_y symmentrical
+        this.position.y -= this.speed.dy;
+        this.speed.dy *= -1;
+    } else if (this.position.y >= canvas.height) {
+        this.position.y = canvas.height;
+        // leave current_y symmentrical
+        this.position.y -= this.getWidthHeight();
+        this.speed.dy *= -1;
+    }
+
+
+    if ((this.position.x >= (canvas.width - players[1].size.width + 5)) && (this.position.y >= players[1].position.y) && (this.position.y <= players[1].position.y + players[1].size.height)) {
+        this.position.x = (canvas.width - players[1].size.width - this.speed.dx);
+        this.speed.dx *= -1;
+        this.ballDirection(players[1]);
+    } else if ((this.position.x <= (players[0].size.width - 5)) && (this.position.y >= players[0].position.y) && (this.position.y <= (players[0].position.y + players[0].size.height))) {
+        this.position.x = (players[0].size.width) - this.speed.dx;
+        this.speed.dx *= -1;
+        this.ballDirection(players[0]);
+    }
+
+    this.draw(canvas.getContext("2d"));
+//    if (this.position.x > canvas.width || this.position.x < 0) {
+//        var player_won = (this.position.x > canvas.width) ? 1 : 2;
+//        window.player_id_having_the_ball = (player_won == 1) ? 2 : 1;
+//        finish_round(player_won);
+//        socket.json.emit("end_of_the_round", {player_won: player_won, room_id: window.room_id});
+//    }
+
+};
+
+Projectile.prototype.ballDirection = function (player) {
+    if (this.position.y < player.position.y + player.size.height / 2) {
+        if (this.speed.dy > 0) {
+            this.speed.dy *= -1;
+        }
+    } else if (this.position.y > player.position.y + player.size.height / 2) {
+        if (this.speed.dy < 0) {
+            this.speed.dy *= -1;
+        }
+
+    }
 };
