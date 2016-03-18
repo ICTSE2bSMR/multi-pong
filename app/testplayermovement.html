@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
     <head>
         <title>TODO supply a title</title>
@@ -13,23 +8,24 @@ and open the template in the editor.
         <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
     </head>
     <body>
-        <canvas id="myCanvas">
-        </canvas>
-
+        <section>
+            <canvas id="myCanvas"></canvas>
+        </section>
         <script>
+            //EventListener for keydown, will send it to the function doKeyDown()
             window.addEventListener('keydown', this.doKeyDown, false);
-////            var width = $("#myCanvas").css("width");
-////            var splittedWidth = width.split("p");
-//            console.log(splittedWidth[0]);
+            var width = $("#myCanvas").css("width").split("p");
             var c = document.getElementById("myCanvas");
-            c.width = '400';
-            c.height = '400';
-            var test = $("#myCanvas").css("width");
-            console.log(test);
             var ctx = c.getContext("2d");
-            var y = 163.5;
+            //Set the width and height of the canvas
+            c.width = width[0];
+            c.height = width[0];
+            //The playerLength is 1/10 of the with/height of the field
+            var playerLength = width[0] / 10;
+            //Initial starting position of the player, var y will also be used for movement of the player.
+            var y = (width[0] / 2) - (playerLength / 2);
             ctx.fillStyle = "#FF0000";
-            ctx.fillRect(0, y, 20, 75);
+            ctx.fillRect(0, y, 20, playerLength);
 
 
             function clearCanvas() {
@@ -37,26 +33,26 @@ and open the template in the editor.
             }
 
             function doKeyDown(e) {
+                //Keycode 40 = the arrowdown key, if it is pressed the player, obviously, will move down.
+                //There is also a check to prevent the player from leaving the playing field.
                 if (e.keyCode === 40) {
-                    if (y >= c.height - 75) {
-                        y = c.height - 75;
+                    if (y >= c.height - playerLength) {
+                        y = c.height - playerLength;
                     } else {
                         y = y + 10;
                     }
-                    clearCanvas();
-                    ctx.fillStyle = "#FF0000";
-                    ctx.fillRect(0, y, 20, 75);
+                    //Keycode 38 = the arrowup key, if it is pressed the player, obviously, will move up.
                 } else if (e.keyCode === 38) {
                     if (y <= 0) {
                         y = 0;
                     } else {
                         y = y - 10;
                     }
-
-                    clearCanvas();
-                    ctx.fillStyle = "#FF0000";
-                    ctx.fillRect(0, y, 20, 75);
                 }
+                //Clear the canvas and redraw it
+                clearCanvas();
+                ctx.fillStyle = "#FF0000";
+                ctx.fillRect(0, y, 20, playerLength);
             }
         </script>
     </body>

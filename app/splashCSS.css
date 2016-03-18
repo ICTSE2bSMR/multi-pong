@@ -1,0 +1,30 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 16-mrt-2016, 15:12:02
+    Author     : Mark
+*/
+
+header{
+    font-family: 'Orbitron', sans-serif;
+    margin-top: 5%;
+    margin-bottom: 3%;
+    text-align: center;
+    width: 100%;
+}
+
+img{
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
+
+span{
+    font-family: 'Inconsolata', sans-serif;
+    text-align: center;
+    width: 100%;
+}
