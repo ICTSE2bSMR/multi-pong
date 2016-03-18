@@ -19,7 +19,7 @@
 
     var canvas = document.getElementById("pong");
     var game = new Pong(canvas);
-    var ball = new Projectile(5, 5, {"x": 200, "y": 200});
+    var ball = new Projectile(5, {"dx": 5, "dy": 5}, {"x": 200, "y": 200});
     var player = new Player("player", 1, {"x": 0, "y": 100}, {"width": 20, "height": 75} , "shape", "#FF0000");
 
 
