@@ -54,3 +54,49 @@ Player.revive = function (json) {
     newPlayer.gameID = json.gameID;
     return newPlayer;
 };
+
+/**
+ * @author Sander
+ * @param {number} y
+ * @param {Object} canvas
+ */
+Player.prototype.move = function (y, canvas) {
+    this.position.y += y;
+    this.speed = y;
+    if (this.position.y < 0) {
+        this.position.y = 0;
+        this.speed = 0;
+    } else if (this.position.y + this.size.height > canvas.height) {
+        this.position.y = canvas.height - this.size.height;
+        this.speed = 0;
+    }
+};
+
+var keysDown = {};
+
+window.addEventListener("keydown", function (event) {
+    keysDown[event.keyCode] = true;
+});
+
+window.addEventListener("keyup", function (event) {
+    delete keysDown[event.keyCode];
+});
+
+/**
+ * @author Sander
+ */
+Player.prototype.update = function () {
+//Keycode 40 = the arrowdown key, if it is pressed the player, obviously, will move down.
+    //There is also a check to prevent the player from leaving the playing field.
+    for (var key in keysDown) {
+        var value = Number(key);
+        if (value === 40) {
+            this.move(7, c);
+            //Keycode 38 = the arrowup key, if it is pressed the player, obviously, will move up.
+        } else if (value === 38) {
+            this.move(-7, c);
+        } else {
+            this.move(0, 0);
+        }
+    }
+};

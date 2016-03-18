@@ -75,12 +75,12 @@ Projectile.prototype.move = function (canvas, players) {
 
     if ((this.position.x + this.radius >= (canvas.width - players[1].size.width + 5)) && (this.position.y >= players[1].position.y) && (this.position.y <= players[1].position.y + players[1].size.height)) {
         this.position.x = (canvas.width - players[1].size.width - this.speed.dx);
-//        this.speed.dy += players[1].speed / 20;
+        this.speed.dy += (players[1].speed / 2);
         this.speed.dx *= -1;
         this.position.x += this.speed.dx;
     } else if ((this.position.x - this.radius <= (players[0].size.width - 5)) && (this.position.y >= players[0].position.y) && (this.position.y <= (players[0].position.y + players[0].size.height))) {
         this.position.x = (players[0].size.width) - this.speed.dx;
-//        this.speed.dy += players[0].speed / 2;
+        this.speed.dy += (players[0].speed / 2);
         this.speed.dx *= -1;
         this.position.x += this.speed.dx;
     }
