@@ -33,10 +33,12 @@
             player1 = new Player();
             player1.position = {"x": 0, "y": y};
             player1.size = {"width": 20, "height": playerheight};
+            player1.speed = 20;
 
             player2 = new Player();
             player2.position = {"x": (c.width - 20), "y": y};
             player2.size = {"width": 20, "height": playerheight};
+            player2.speed = 20;
 
             function clearCanvas() {
                 ctx.clearRect(0, 0, c.width, c.height);
@@ -48,6 +50,7 @@
                 if (e.keyCode === 40) {
                     if (player2.position.y >= c.height - player2.size.height) {
                         player2.position.y = c.height - player2.size.height;
+//                        player2.speed = 4;
                     } else {
                         player2.position.y = player2.position.y + 10;
                     }
