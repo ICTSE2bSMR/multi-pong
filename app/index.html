@@ -18,9 +18,12 @@
 
     var canvas = document.getElementById("pong");
     var game = new Pong(canvas);
-    var ball = new Projectile(2, {"dx": 2, "dy": 2}, {"x": canvas.width/2, "y": canvas.height/2});
+    var ball = new Projectile(2, {"dx": 2, "dy": 2}, {"x": canvas.width / 2, "y": canvas.height / 2});
 
-    var player = new Player("Test", "Side", {"x": 0, "y": canvas.height/2}, {"width": 20, "height": 60}, "Shape", "#FF0000");
+    var player = new Player("Test", "Side", {"x": 0, "y": canvas.height / 2}, {
+        "width": 20,
+        "height": 60
+    }, "Shape", "#FF0000");
 
     socket.emit("newplayer", "hello");
 
@@ -35,14 +38,15 @@
         }
         game.addPlayer(player);
 
+        console.log(game);
         game.draw(canvas);
 
         socket.emit("clientmessage", game);
     });
 
     function reviveGame(json) {
+        game.players = [];
         for (var i = 0; i < json.players.length; i++) {
-            game.players.in
             game.players.push(Player.revive(json.players[i]));
         }
         game.nextId = json.nextId;
@@ -51,7 +55,7 @@
 
     }
     socket.on("servermessage", function (data) {
-        console.log(data);
+//        console.log(data);
         reviveGame(data);
         game.draw();
     });

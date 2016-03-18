@@ -16,6 +16,7 @@ and open the template in the editor.
     </head>
     <body>
         <section>
+            <img id="splash" src="Images/splashPong.png" alt="image" style="display: none;">
             <canvas id="myCanvas">
             </canvas>
         </section>
@@ -25,8 +26,12 @@ and open the template in the editor.
 //            window.addEventListener('keydown', this.doKeyDown, false);
             var canvas = document.getElementById("myCanvas");
 
-            var splashImage = document.createElement("img");
-            jQuery('img').attr("src", "Images/splashPong.png");
+            var splashImage = document.getElementById("splash");
+
+//            var splashImage = document.createElement("img");
+//            $('img').attr("src", "app/Images/splashPong.png");
+
+
 
 
 
@@ -35,8 +40,8 @@ and open the template in the editor.
                 var ctx = canvas.getContext('2d');
                 ctx.font = "10px monospace";
                 ctx.textAlign = "center";
-                ctx.fillText("press spacebar to continue...", canvas.width / 2, canvas.height / 4 * 3);
-                ctx.drawImage(splashImage, 500, 500);
+//                ctx.fillText("press spacebar to continue...", canvas.width / 2, canvas.height / 4 * 3);
+                ctx.drawImage(splashImage, 0, 0);
 //                var img = new Image();
 //                img.src = "Images/splashPong.png";
 //                img.onload = function () {
