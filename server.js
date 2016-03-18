@@ -70,7 +70,7 @@ ios.sockets.on("connection", function(socket) {
     });
 
     socket.on("clientmessage", function(data) {
-        //console.log(socket.id, ": ", data);
+        console.log(socket.id, ": ", data);
         game = data;
         socket.broadcast.emit("servermessage", data);
     });

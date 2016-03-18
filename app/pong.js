@@ -71,3 +71,7 @@ Pong.prototype.draw = function () {
     }
     this.projectile.draw(ctx);
 };
+
+Pong.prototype.contains = function(o) {
+    return !!~this.players.indexOf(o);
+};
