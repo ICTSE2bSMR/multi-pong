@@ -2,22 +2,26 @@
  * Created by Robin on 3/16/2016.
  */
 
-var Projectile = function(radius, speed, startPosition) {
+var Projectile = function (radius, speed, startPosition) {
     this.radius = radius;
     this.speed = speed;
     this.position = startPosition;
 };
 
-Projectile.prototype.getWidthHeight = function() {
-    return this.radius*2;
+Projectile.prototype.getWidthHeight = function () {
+    return this.radius * 2;
 };
 
-Projectile.prototype.draw = function(context) {
+Projectile.prototype.draw = function (context) {
     //TODO drawing logic here
     context.fillStyle = "#000000";
-    context.fillRect(this.position.x, this.position.y, this.radius*2, this.radius*2);
+    context.fillRect(this.position.x, this.position.y, this.radius * 2, this.radius * 2);
 };
 
-Projectile.revive = function(json) {
+Projectile.revive = function (json) {
     return new Projectile(json.radius, json.speed, json.position);
+};
+
+Projectile.prototype.move = function (context) {
+
 };
