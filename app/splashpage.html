@@ -26,12 +26,17 @@ and open the template in the editor.
             var gamestate = "splash";
             window.addEventListener('keydown', this.doKeyDown, false);
             var menuHTML = "<div id='splash'><span id='header'>Multiplayer - Pong</span><br><ul class='menu_list'><li class='selected' id='play'>Play</li><li id='settings'>Settings</li><li id='highscores'>Highscores</li></ul></div>";
-            var lobbyHTML = "<h1>YOU ARE IN THE LOBBY</h1>";
+            var lobbyHTML = "<div><span id='header'>lobbies</span><br><div id='lobby_div'><ul id='lobbies'><li class='lobby'>Naam:<br>Aantal spelers:<br>Toeganslichtje<br></li></ul></div><div id='lobcreate'><button onClick='newLobby()'>New Lobby</button></div></div>";
 
 
             var splashImage = document.getElementById("splash");
 
-
+            function newLobby() {
+                $("#lobcreate").html("<form id='createform' method='post'><br>\n\
+        <label for='naam'>Naam:</label><input type='text' name='naam'><br>\n\
+<input type='submit' value='create!'>");
+            }
+            ;
 
             function onGamestateChange(gamestate) {
                 switch (gamestate) {
