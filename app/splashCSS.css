@@ -13,10 +13,13 @@ and open the template in the editor.
     width: 98%;
     height: 100%;
     text-align: center;
+    margin: 0 auto;
+    display: block;
 
 }
 
 #header{
+    text-align: center;
     font-family: "Orbitron", monospace;
     font-size: 3em;
     margin-bottom: 40px;
@@ -39,12 +42,45 @@ and open the template in the editor.
     clear: both;
 }
 
-ul{
-    margin-right: 45%;
-    margin-left: 43%;
+.menu_list{
+    margin: 0 auto;
+    width: 300px;
+    display: block;
     list-style: none;
 }
-li{
+#play,#settings,#highscores{
+    font-family: "Orbitron", monospace;
     padding:10px;
     width: 200px;
+}
+
+#lobbies{
+    margin: 0 auto;
+    display: block;
+    font-family: "Inconsolata", monospace;
+    list-style: none;
+    text-align: center;
+    width: 200px;
+}
+
+.lobby{
+    width: 150px;
+    border: 1px solid black;
+}
+
+#lobcreate{ 
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    width: 50%;
+    float: left;
+}
+
+form{
+    width: 200px;
+}
+
+#lobby_div{
+    width: 48%;
+    float: left;
 }
