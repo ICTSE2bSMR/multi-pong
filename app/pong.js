@@ -28,14 +28,14 @@ var Pong = function (canvas) {
  */
 Pong.prototype.addPlayer = function (player) {
 
-    if (this.nextId + 1 >= MAX_PLAYERS)
+    if (this.players.length >= MAX_PLAYERS)
         return false;
 
     player.gameID = ++this.nextId;
 
     if (player.gameID === 0) {
         player.position.x = 0;
-    } else if (player.gameID === 1) {
+    } else {
         player.position.x = this.canvas.width - player.size.width;
     }
     this.players.push(player);
@@ -63,11 +63,22 @@ Pong.prototype.removePlayer = function (player) {
 Pong.prototype.draw = function () {
     // TODO clear canvas
     //console.log("Drawing...");
-    console.log("Players: ", this.players);
+    // console.log("Players: ", this.players);
     var ctx = this.canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     for (var i = 0; i < this.players.length; i++) {
         //console.log(this.players[i]);
         this.players[i].draw(ctx);
     }
     this.projectile.draw(ctx);
+};
+
+Pong.prototype.contains = function(id) {
+    for(var i = 0; i < this.players.length; i++) {
+        console.log(this.players);
+        if(id === this.players[i].gameID)
+            return true;
+    }
+    return false;
 };

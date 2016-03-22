@@ -16,40 +16,48 @@
 <script>
     var socket = io.connect("http://localhost:8000");
 
-
     var canvas = document.getElementById("pong");
     var game = new Pong(canvas);
-    var ball = new Projectile(5, {"dx": 5, "dy": 5}, {"x": 200, "y": 200});
-    var player = new Player("player", 1, {"x": 0, "y": 100}, {"width": 20, "height": 75} , "shape", "#FF0000");
+    var ball = new Projectile(2, {"dx": 2, "dy": 2}, {"x": canvas.width / 2, "y": canvas.height / 2});
 
+    var player = new Player("Test", "Side", {"x": 0, "y": canvas.height / 2}, {
+        "width": 20,
+        "height": 60
+    }, "Shape", "#FF0000");
 
     socket.emit("newplayer", "hello");
 
-    socket.on("servernewplayer", function(data) {
-        if(data === null){
+    socket.on("servernewplayer", function (data) {
+        if (data === null) {
 //            console.log("is null... creating new game");
             game = new Pong(canvas);
             game.projectile = ball;
         } else {
 //            console.log("is not null...");
-            for(var i = 0; i < data.players.length; i++) {
-                game.players.push(Player.revive(data.players[i]));
-            }
-            game.nextId = data.nextId;
-            game.projectile = Projectile.revive(data.projectile);
-            game.canvas = canvas;
+            reviveGame(data);
         }
         game.addPlayer(player);
 
+        console.log(game);
         game.draw(canvas);
 
         socket.emit("clientmessage", game);
     });
 
+    function reviveGame(json) {
+        game.players = [];
+        for (var i = 0; i < json.players.length; i++) {
+            game.players.push(Player.revive(json.players[i]));
+        }
+        game.nextId = json.nextId;
+        game.projectile = Projectile.revive(json.projectile);
+        game.canvas = canvas;
+
+    }
     socket.on("servermessage", function (data) {
-        console.log(data);
-        game.players = data.players;
-        game.nextId = data.nextId;
+//        console.log(data);
+        reviveGame(data);
+        game.draw();
     });
 
     $(window).on('beforeunload', function () {
@@ -58,11 +66,11 @@
         socket.close();
     });
 
-//    $('#myButton').click(function () {
-//        var message = $('#msg').val();
-//        console.log(message);
-//        socket.emit("clientmessage", game);
-//    });
+    //    $('#myButton').click(function () {
+    //        var message = $('#msg').val();
+    //        console.log(message);
+    //        socket.emit("clientmessage", game);
+    //    });
 
 
 </script>

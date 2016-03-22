@@ -6,11 +6,11 @@
  *
  * @param {string} name
  * @param {string} side
- * 
+ *
  * @param {Object} position             Position of the player.
  * @param {number} position.x
  * @param {number} position.y
- * 
+ *
  * @param {Object} size                 Size of the player
  * @param {number} size.width
  * @param {number} size.height
@@ -20,7 +20,7 @@
  *
  * @constructor
  */
-var Player = function(name, side, position, size, shape, color) {
+var Player = function (name, side, position, size, shape, color, speed) {
     this.gameID = null;
     this.name = name;
     this.side = side;
@@ -28,6 +28,7 @@ var Player = function(name, side, position, size, shape, color) {
     this.size = size;
     this.position = position;
     this.color = color;
+    this.speed = speed;
 };
 
 /**
@@ -35,7 +36,7 @@ var Player = function(name, side, position, size, shape, color) {
  *
  * @param {Object} context
  */
-Player.prototype.draw = function(context) {
+Player.prototype.draw = function (context) {
     // TODO drawing logic here
     //console.log("Drawing player ", this.gameID, " width: ", this.size["width"]);
     context.fillStyle = this.color;
@@ -44,11 +45,11 @@ Player.prototype.draw = function(context) {
 
 /**
  * Reviver function to create a new Player from the given Json.
- * 
+ *
  * @param {Object} json
  * @returns {Player}
  */
-Player.revive = function(json){
+Player.revive = function (json) {
     var newPlayer = new Player(json.name, json.side, json.position, json.size, json.shape, json.color);
     newPlayer.gameID = json.gameID;
     return newPlayer;

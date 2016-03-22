@@ -8,6 +8,7 @@ and open the template in the editor.
     Author     : Mark
 */
 
+
 #splash{
     width: 98%;
     height: 100%;
@@ -40,4 +41,5 @@ and open the template in the editor.
 
 ul{
     list-style: none;
+
 }

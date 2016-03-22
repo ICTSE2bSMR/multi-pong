@@ -62,6 +62,7 @@ ios.sockets.on("connection", function(socket) {
 
     socket.on("disconnecting", function(data) {
         game = data;
+        console.log(game);
         socket.broadcast.emit("servermessage", game);
     });
 
@@ -70,7 +71,7 @@ ios.sockets.on("connection", function(socket) {
     });
 
     socket.on("clientmessage", function(data) {
-        //console.log(socket.id, ": ", data);
+        console.log(socket.id, ": ", data);
         game = data;
         socket.broadcast.emit("servermessage", data);
     });
@@ -78,7 +79,7 @@ ios.sockets.on("connection", function(socket) {
     socket.on("newplayer", function() {
         console.log("Player connected: ", socket.id);
         if(ios.sockets.connected[socket.id]) {
-            console.log("sending info to new player...", game);
+            console.log("sending info to new player...");
             ios.sockets.connected[socket.id].emit('servernewplayer', game);
         }
     });
