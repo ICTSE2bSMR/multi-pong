@@ -21,7 +21,7 @@
  * @constructor
  */
 var Player = function (position, size, color, speed) {
-    this.gameID = null;
+    this.id = null;
     this.size = size;
     this.position = position;
     this.color = color;
@@ -35,7 +35,6 @@ var Player = function (position, size, color, speed) {
  */
 Player.prototype.draw = function (context) {
     // TODO drawing logic here
-    //console.log("Drawing player ", this.gameID, " width: ", this.size["width"]);
     context.fillStyle = this.color;
     context.fillRect(this.position.x, this.position.y, this.size.width, this.size.height);
 };
@@ -48,7 +47,7 @@ Player.prototype.draw = function (context) {
  */
 Player.revive = function (json) {
     var newPlayer = new Player(json.position, json.size, json.color, json.speed);
-    newPlayer.gameID = json.gameID;
+    newPlayer.id = json.id;
     return newPlayer;
 };
 
@@ -86,6 +85,8 @@ window.addEventListener("keyup", function (event) {
 Player.prototype.update = function () {
 //Keycode 40 = the arrowdown key, if it is pressed the player, obviously, will move down.
     //There is also a check to prevent the player from leaving the playing field.
+    // console.log("Update... Keys -> ", keysDown);
+    // console.log("Y: ", this.position.y);
     for (var key in keysDown) {
         var value = Number(key);
         if (value === 40) {
@@ -97,5 +98,4 @@ Player.prototype.update = function () {
             this.move(0, 0);
         }
     }
-    socket.emit("updateplayer", this);
 };

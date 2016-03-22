@@ -60,34 +60,39 @@ var game = null;
 
 ios.sockets.on("connection", function(socket) {
 
-    socket.on("disconnecting", function(data) {
-        game = data;
-        // console.log(game);
-        socket.broadcast.emit("servermessage", game);
-    });
+    socket.send(socket.id);
 
-    socket.on("disconnect", function() {
-        console.log("Player disconnected: ", socket.id);
+    socket.on("disconnecting", function(data) {
+        if(game.player1 === null && game.player2 === null)
+            game = null;
+        socket.broadcast.emit("playerdisconnectmessage", data);
     });
 
     socket.on("clientmessage", function(data) {
-        // console.log(socket.id, ": ", data);
-        console.log("Received message from: " , socket.id);
+        if(data.canvas === undefined) {
+            console.log("Received player status from: ", socket.id);
+        } else {
+            console.log("Received game status from: ", socket.id);
+        }
         game = data;
         socket.broadcast.emit("servermessage", data);
     });
 
     socket.on("clientupdate", function(data) {
-        console.log("Client update!!! -> ", data);
+        // console.log("Client update!!! -> ", data);
         socket.broadcast.emit("updatemessage", data);
+    });
+
+    socket.on("ballupdate", function(data) {
+        socket.broadcast.emit("ballupdatemessage", data);
     });
 
     socket.on("newplayer", function() {
         console.log("Player connected: ", socket.id);
         if(ios.sockets.connected[socket.id]) {
             console.log("sending info to new player...");
-            ios.sockets.connected[socket.id].emit('servernewplayer', game);
+            ios.sockets.connected[socket.id].emit("servernewplayer", {"id": socket.id, "game": game});
         }
     });
-    
+
 });

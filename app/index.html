@@ -10,14 +10,14 @@
 <canvas id="pong" width="400" height="400"></canvas>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-<script src="pong.js"></script>
 <script src="player.js"></script>
 <script src="projectile.js"></script>
 <script>
     var socket = io.connect("http://localhost:8000");
 
+    var game = {};
+
     var canvas = document.getElementById("pong");
-    var game = new Pong(canvas);
     var ball = new Projectile(2, {"dx": 2, "dy": 2}, {"x": canvas.width / 2, "y": canvas.height / 2});
 
     var player = new Player({"x": 0, "y": canvas.height / 2}, {
@@ -25,82 +25,94 @@
         "height": 60
     }, "#FF0000", 20);
 
-    socket.emit("newplayer", "hello");
+    socket.emit("newplayer");
 
     socket.on("servernewplayer", function (data) {
-        if (data === null) {
-//            console.log("is null... creating new game");
-            game = new Pong(canvas);
+        if (data.game === null) {
+            // This means that we have to create a new game
             game.projectile = ball;
+            player.id = data.id;
+            game.player1 = player;
+            console.log(data);
         } else {
-            console.log("is not null...");
-            reviveGame(data);
+            console.log(data);
+            if (data.id !== player.id) {
+                console.log("New player...");
+                game.player1 = Player.revive(data.game.player1);
+                player.id = data.id;
+                game.player2 = player;
+                player.position.x = canvas.width - player.size.width;
+                ball = Projectile.revive(data.game.projectile)
+                game.projectile = ball;
+            }
+
         }
-        game.addPlayer(player);
 //        console.log(player);
-        game.draw(canvas);
 
         socket.emit("clientmessage", game);
 
         requestAnimationFrame(mainLoop);
     });
 
-    socket.on("updatemessage", function (data) {
-        for (var i = 0; i < game.player.length; i++) {
-            if (data.gameID === game.players[i].gameID) {
-                game.players[i].position.y = data.position.y;
-                break;
-            }
-        }
-    });
+
 
     function mainLoop() {
-        if (game.players.length === 2) {
-            var ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            player.update();
-            console.log(player);
-            for (var i = 0; i < game.players.length; i++) {
-                game.players[i].draw(ctx);
-            }
+//        console.log(game);
+//        console.log(player);
+        player.update();
 
-            ball.move(canvas, game.players);
-            ball.draw(ctx);
+        if ((game.player1 !== null && game.player1 !== undefined) &&
+                (game.player2 !== null && game.player2 !== undefined)) {
+            ball.move(canvas, [game.player1, game.player2]);
+            socket.emit("ballupdate", ball);
         }
+        if (game.player1 !== null && game.player1 !== undefined)
+            game.player1.draw(ctx);
+
+        if (game.player2 !== null && game.player2 !== undefined)
+            game.player2.draw(ctx);
+
+        if (game.projectile !== null && game.projectile !== undefined)
+            game.projectile.draw(ctx);
+
+        socket.emit("clientupdate", player);
+
         requestAnimationFrame(mainLoop);
     }
 
-
-    function reviveGame(json) {
-//        console.log("Reviving game...");
-//        console.log("Delta time -> ", deltaT);
-
-        game.players = [];
-        for (var i = 0; i < json.players.length; i++) {
-            game.players.push(Player.revive(json.players[i]));
-        }
-        game.nextId = json.nextId;
-        game.projectile = Projectile.revive(json.projectile);
-        game.canvas = canvas;
-
-    }
-
     socket.on("servermessage", function (data) {
-//        console.log(data);
-        if (data.canvas !== undefined) {
-            reviveGame(data);
-        } else {
-            console.log("Updating player ", data);
-        }
-        game.draw();
+        game.player2 = Player.revive(data.player2);
+    });
+    socket.on("updatemessage", function (data) {
+//        console.log("Received update message");
+        for (var o in game)
+            if (game[o].id === data.id) {
+                game[o].position = data.position;
+            }
+    });
+    socket.on("ballupdatemessage", function(data) {
+        ball.position = data.position;
+//        game.projectile.position
+    });
+    socket.on("playerdisconnectmessage", function (data) {
+        for (var o in game)
+            if (game[o].id === data.id)
+                game[o] = null;
     });
 
     $(window).on('beforeunload', function () {
-        game.removePlayer(player);
-        socket.emit("disconnecting", game);
+        for (var o in game) {
+            if (o.id === player.id) {
+                o = null;
+            }
+        }
+        socket.emit("disconnecting", player);
         socket.close();
     });
+
 
     //    $('#myButton').click(function () {
     //        var message = $('#msg').val();
