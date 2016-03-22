@@ -25,24 +25,23 @@ and open the template in the editor.
         <script>
             var gamestate = "splash";
             window.addEventListener('keydown', this.doKeyDown, false);
-            var menuHTML = "<div id='splash'><span id='header'>Multiplayer - Pong</span><br><ul><li class='selected'>Play</li><li>Settings</li><li>Highscores</li></ul></div>";
+            var menuHTML = "<div id='splash'><span id='header'>Multiplayer - Pong</span><br><ul><li class='selected' id='play'>Play</li><li id='settings'>Settings</li><li id='highscores'>Highscores</li></ul></div>";
+            var lobbyHTML = "<h1>YOU ARE IN THE LOBBY</h1>";
+
 
             var splashImage = document.getElementById("splash");
-
-//            var splashImage = document.createElement("img");
-//            $('img').attr("src", "app/Images/splashPong.png");
-
 
 
 
             function onGamestateChange(gamestate) {
-                alert("ik ben er");
                 switch (gamestate) {
                     case "menu":
+                        clearBody();
                         document.body.innerHTML = menuHTML;
                         break;
                     case "lobby":
-
+                        clearBody();
+                        document.body.innerHTML = lobbyHTML;
                         break;
                 }
             }
@@ -52,37 +51,55 @@ and open the template in the editor.
                 document.body.innerHTML = "";
             }
 
-            function drawCanvas(canvas) {
-                var ctx = canvas.getContext('2d');
-                ctx.font = "10px monospace";
-                ctx.textAlign = "center";
-//                ctx.fillText("press spacebar to continue...", canvas.width / 2, canvas.height / 4 * 3);
-                ctx.drawImage(splashImage, 0, 0);
-//                var img = new Image();
-//                img.src = "Images/splashPong.png";
-//                img.onload = function () {
-//                    ctx = document.getElementById("myCanvas").getContext('2d');
-//
-//                    ctx.drawImage(this.img, 500, 500);
-//                };
+            function doKeyDown(e) {
 
-
-
-                function doKeyDown(e) {
-
-                    //check if document is ready.
-                    //Keycode 32 = the spacebar, if it is pressed the player, will continue to the menu screen.
-                    if (gamestate === "splash") {
-                        if (e.keyCode === 32) {
-                            clearBody();
-                            document.body.innerHTML = '';
-                            //link to menu
-                            gamestate = "menu";
-                            onGamestateChange(gamestate);
-
-                        }
+                //check if document is ready.
+                //Keycode 32 = the spacebar, if it is pressed the player, will continue to the menu screen.
+                if (gamestate === "splash") {
+                    if (e.keyCode === 32) {
+                        clearBody();
+                        //link to menu
+                        gamestate = "menu";
+                        onGamestateChange(gamestate);
                     }
+                } else if (gamestate === "menu") {
 
+                    if (e.keyCode === 13) {//if pressed key = enter  
+                        $(".selected").each(function () {
+                            var id = $(this).attr("id");
+                            if (id === "play") {
+                                gamestate = "lobby";
+                                onGamestateChange(gamestate);
+                            }
+                        });
+
+                    } else if (e.keyCode === 38) {//if pressed key = up
+
+                        $(".selected").each(function () {
+                            var id = $(this).attr("id");
+                            $(this).removeClass("selected");
+                            if (id === "play") {
+                                $("#highscores").addClass("selected");
+                            } else if (id === "highscores") {
+                                $("#settings").addClass("selected");
+                            } else if (id === "settings") {
+                                $("#play").addClass("selected");
+                            }
+
+                        });
+                    } else if (e.keyCode === 40) { //if pressed key = down
+                        $(".selected").each(function () {
+                            var id = $(this).attr("id");
+                            $(this).removeClass("selected");
+                            if (id === "play") {
+                                $("#settings").addClass("selected");
+                            } else if (id === "highscores") {
+                                $("#play").addClass("selected");
+                            } else if (id === "settings") {
+                                $("#highscores").addClass("selected");
+                            }
+                        });
+                    }
                 }
             }
 
