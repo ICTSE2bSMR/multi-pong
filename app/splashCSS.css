@@ -76,6 +76,12 @@ and open the template in the editor.
     float: left;
 }
 
+#createform{
+    margin: 0 auto;
+    display: block;
+    width: 300px;
+}
+
 form{
     width: 200px;
 }
