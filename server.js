@@ -77,6 +77,11 @@ ios.sockets.on("connection", function(socket) {
         socket.broadcast.emit("servermessage", data);
     });
 
+    socket.on("clientupdate", function(data) {
+        console.log("Client update!!! -> ", data);
+        socket.broadcast.emit("updatemessage", data);
+    });
+
     socket.on("newplayer", function() {
         console.log("Player connected: ", socket.id);
         if(ios.sockets.connected[socket.id]) {
@@ -84,4 +89,5 @@ ios.sockets.on("connection", function(socket) {
             ios.sockets.connected[socket.id].emit('servernewplayer', game);
         }
     });
+    
 });

@@ -74,36 +74,6 @@ Pong.prototype.draw = function () {
     this.projectile.draw(ctx);
 };
 
-/**
- * Starts the gameloop.
- */
-Pong.prototype.start = function() {
-    // console.log("Starting game...");
-    requestAnimationFrame(this.update.bind(this));
-};
-
-/**
- * Updates the game.
- *
- * @param {Object} context
- * @author Sander
- */
-Pong.prototype.update = function() {
-
-    // console.log("Updating");
-    // context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for(var i = 0; i < this.players.length; i++) {
-        this.players[i].update();
-    }
-    this.projectile.move(this.canvas, this.players);
-    this.draw();
-
-    // Update clients
-    // TODO tickrate
-    // socket.emit("clientmessage", this);
-    requestAnimationFrame(this.update.bind(this));
-};
-
 Pong.prototype.contains = function(id) {
     for(var i = 0; i < this.players.length; i++) {
         console.log(this.players);

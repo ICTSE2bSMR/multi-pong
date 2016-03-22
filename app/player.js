@@ -4,6 +4,9 @@
 
 /**
  *
+ * @param {string} name
+ * @param {string} side
+ *
  * @param {Object} position             Position of the player.
  * @param {number} position.x
  * @param {number} position.y
@@ -12,9 +15,8 @@
  * @param {number} size.width
  * @param {number} size.height
  *
+ * @param {string} shape
  * @param {string} color                Color of the player, e.g. "#FF0000" or "red".
- *
- * @param speed
  *
  * @constructor
  */
@@ -24,7 +26,6 @@ var Player = function (position, size, color, speed) {
     this.position = position;
     this.color = color;
     this.speed = speed;
-    this.keysDown = {};
 };
 
 /**
@@ -68,21 +69,16 @@ Player.prototype.move = function (y, canvas) {
     }
 };
 
-/**
- * Initializes the Key Events.
- *
- * @author Sander
- */
-Player.prototype.initKeyEvents = function () {
-    var self = this;
-    window.addEventListener("keydown", function (event) {
-        self.keysDown[event.keyCode] = true;
-    });
+var keysDown = {};
 
-    window.addEventListener("keyup", function (event) {
-        delete self.keysDown[event.keyCode];
-    });
-};
+window.addEventListener("keydown", function (event) {
+    console.log("Keydown");
+    keysDown[event.keyCode] = true;
+});
+
+window.addEventListener("keyup", function (event) {
+    delete keysDown[event.keyCode];
+});
 
 /**
  * @author Sander
@@ -90,7 +86,7 @@ Player.prototype.initKeyEvents = function () {
 Player.prototype.update = function () {
 //Keycode 40 = the arrowdown key, if it is pressed the player, obviously, will move down.
     //There is also a check to prevent the player from leaving the playing field.
-    for (var key in this.keysDown) {
+    for (var key in keysDown) {
         var value = Number(key);
         if (value === 40) {
             this.move(7, 0);
@@ -101,4 +97,5 @@ Player.prototype.update = function () {
             this.move(0, 0);
         }
     }
+    socket.emit("updateplayer", this);
 };

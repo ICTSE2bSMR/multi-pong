@@ -37,17 +37,45 @@
             reviveGame(data);
         }
         game.addPlayer(player);
-        console.log(player);
-//        game.draw(canvas);
+//        console.log(player);
+        game.draw(canvas);
 
         socket.emit("clientmessage", game);
 
-        player.initKeyEvents();
-
+        requestAnimationFrame(mainLoop);
     });
+
+    socket.on("updatemessage", function (data) {
+        for (var i = 0; i < game.player.length; i++) {
+            if (data.gameID === game.players[i].gameID) {
+                game.players[i].position.y = data.position.y;
+                break;
+            }
+        }
+    });
+
+    function mainLoop() {
+        if (game.players.length === 2) {
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            player.update();
+            console.log(player);
+            for (var i = 0; i < game.players.length; i++) {
+                game.players[i].draw(ctx);
+            }
+
+            ball.move(canvas, game.players);
+            ball.draw(ctx);
+        }
+        requestAnimationFrame(mainLoop);
+    }
+
 
     function reviveGame(json) {
 //        console.log("Reviving game...");
+//        console.log("Delta time -> ", deltaT);
+
         game.players = [];
         for (var i = 0; i < json.players.length; i++) {
             game.players.push(Player.revive(json.players[i]));
@@ -56,14 +84,15 @@
         game.projectile = Projectile.revive(json.projectile);
         game.canvas = canvas;
 
-        if(game.players.length === 2) {
-            game.start();
-        }
-
     }
+
     socket.on("servermessage", function (data) {
 //        console.log(data);
-        reviveGame(data);
+        if (data.canvas !== undefined) {
+            reviveGame(data);
+        } else {
+            console.log("Updating player ", data);
+        }
         game.draw();
     });
 
