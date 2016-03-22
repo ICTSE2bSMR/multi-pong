@@ -1,6 +1,6 @@
 {
   "name": "multi-pong",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A multiplayer pong game with nodejs",
   "main": "server.js",
   "scripts": {
