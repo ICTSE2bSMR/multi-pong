@@ -29,6 +29,7 @@ var Player = function (name, side, position, size, shape, color, speed) {
     this.position = position;
     this.color = color;
     this.speed = speed;
+    this.keysDown = {};
 };
 
 /**
@@ -72,15 +73,21 @@ Player.prototype.move = function (y, canvas) {
     }
 };
 
-var keysDown = {};
+/**
+ * Initializes the Key Events.
+ *
+ * @author Sander
+ */
+Player.prototype.initKeyEvents = function () {
+    var self = this;
+    window.addEventListener("keydown", function (event) {
+        self.keysDown[event.keyCode] = true;
+    });
 
-window.addEventListener("keydown", function (event) {
-    keysDown[event.keyCode] = true;
-});
-
-window.addEventListener("keyup", function (event) {
-    delete keysDown[event.keyCode];
-});
+    window.addEventListener("keyup", function (event) {
+        delete self.keysDown[event.keyCode];
+    });
+};
 
 /**
  * @author Sander
