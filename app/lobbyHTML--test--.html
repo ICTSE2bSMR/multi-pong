@@ -8,9 +8,34 @@ and open the template in the editor.
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
+        <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="splashCSS.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <div>TODO write content</div>
+        <div>
+            <span id='header'>lobbies</span><br>
+            <div id="lobby_div">
+                <ul id="lobbies">
+                    <li class="lobby">Naam:<br>
+                        Aantal spelers:<br>
+                        Toeganslichtje<br>
+                    </li>
+                </ul>
+            </div>
+            <div id="lobcreate">
+                <button onClick="newLobby()">New Lobby</button>
+            </div>
+        </div>
+
+        <script>
+            function newLobby() {
+                $("#lobcreate").html("<form id='createform' method='post'><br>\n\
+        <label for='naam'>Naam:</label><input type='text' name='naam'><br>\n\
+<input type='submit' value='create!'>");
+            }
+            ;
+        </script>
+
     </body>
 </html>

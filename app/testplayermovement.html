@@ -26,23 +26,24 @@
             //Initial starting position of the player, var y will also be used for movement of the player.
             var y = (width[0] / 2) - (playerheight / 2);
 
-            balletje = new Projectile(10, {"dx": 2, "dy": 2}, {"x": 100, "y": 100});
+            balletje = new Projectile(10, {"dx": 3, "dy": 2}, {"x": 100, "y": 100});
             balletje.draw(ctx);
 
             player1 = new Player();
-            player1.position = {"x": 0, "y": y};
-            player1.size = {"width": 20, "height": playerheight};
+            player1.position = {"x": 10, "y": y};
+            player1.size = {"width": 10, "height": playerheight};
             player1.speed = 20;
 
             player2 = new Player();
             player2.position = {"x": (c.width - 20), "y": y};
-            player2.size = {"width": 20, "height": playerheight};
+            player2.size = {"width": 10, "height": playerheight};
             player2.speed = 20;
 
             function clearCanvas() {
                 ctx.clearRect(0, 0, c.width, c.height);
             }
-
+            var requestId;
+            requestAnimationFrame(mainLoop);
             function mainLoop() {
                 clearCanvas();
                 player1.update();
@@ -51,10 +52,26 @@
                 player1.draw(ctx);
                 player2.draw(ctx);
                 balletje.draw(ctx);
-                requestAnimationFrame(mainLoop);
+                requestId = window.requestAnimationFrame(mainLoop);
+                if (balletje.gameOver) {
+                    stop();
+                    console.log('heuj');
+                }
             }
 
-            requestAnimationFrame(mainLoop);
+            function start() {
+                if (!requestId) {
+                    mainLoop();
+                }
+            }
+
+            function stop() {
+                if (requestId) {
+                    window.cancelAnimationFrame(requestId);
+                    requestId = undefined;
+                }
+            }
+
         </script>
     </body>
 </html>
