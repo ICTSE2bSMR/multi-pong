@@ -4,9 +4,6 @@
 
 /**
  *
- * @param {string} name
- * @param {string} side
- *
  * @param {Object} position             Position of the player.
  * @param {number} position.x
  * @param {number} position.y
@@ -15,16 +12,14 @@
  * @param {number} size.width
  * @param {number} size.height
  *
- * @param {string} shape
  * @param {string} color                Color of the player, e.g. "#FF0000" or "red".
+ *
+ * @param speed
  *
  * @constructor
  */
-var Player = function (name, side, position, size, shape, color, speed) {
+var Player = function (position, size, color, speed) {
     this.gameID = null;
-    this.name = name;
-    this.side = side;
-    this.shape = shape;
     this.size = size;
     this.position = position;
     this.color = color;
@@ -51,7 +46,7 @@ Player.prototype.draw = function (context) {
  * @returns {Player}
  */
 Player.revive = function (json) {
-    var newPlayer = new Player(json.name, json.side, json.position, json.size, json.shape, json.color);
+    var newPlayer = new Player(json.position, json.size, json.color, json.speed);
     newPlayer.gameID = json.gameID;
     return newPlayer;
 };
@@ -95,13 +90,13 @@ Player.prototype.initKeyEvents = function () {
 Player.prototype.update = function () {
 //Keycode 40 = the arrowdown key, if it is pressed the player, obviously, will move down.
     //There is also a check to prevent the player from leaving the playing field.
-    for (var key in keysDown) {
+    for (var key in this.keysDown) {
         var value = Number(key);
         if (value === 40) {
-            this.move(7, c);
+            this.move(7, 0);
             //Keycode 38 = the arrowup key, if it is pressed the player, obviously, will move up.
         } else if (value === 38) {
-            this.move(-7, c);
+            this.move(-7, 0);
         } else {
             this.move(0, 0);
         }

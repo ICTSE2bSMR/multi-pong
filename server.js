@@ -62,7 +62,7 @@ ios.sockets.on("connection", function(socket) {
 
     socket.on("disconnecting", function(data) {
         game = data;
-        console.log(game);
+        // console.log(game);
         socket.broadcast.emit("servermessage", game);
     });
 
@@ -71,7 +71,8 @@ ios.sockets.on("connection", function(socket) {
     });
 
     socket.on("clientmessage", function(data) {
-        console.log(socket.id, ": ", data);
+        // console.log(socket.id, ": ", data);
+        console.log("Received message from: " , socket.id);
         game = data;
         socket.broadcast.emit("servermessage", data);
     });

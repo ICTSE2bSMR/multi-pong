@@ -78,9 +78,8 @@ Pong.prototype.draw = function () {
  * Starts the gameloop.
  */
 Pong.prototype.start = function() {
-    requestAnimationFrame(function() {
-        this.update.bind(this, this.canvas.getContext("2d"));
-    });
+    // console.log("Starting game...");
+    requestAnimationFrame(this.update.bind(this));
 };
 
 /**
@@ -89,18 +88,20 @@ Pong.prototype.start = function() {
  * @param {Object} context
  * @author Sander
  */
-Pong.prototype.update = function(context) {
+Pong.prototype.update = function() {
 
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // console.log("Updating");
+    // context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for(var i = 0; i < this.players.length; i++) {
         this.players[i].update();
     }
     this.projectile.move(this.canvas, this.players);
     this.draw();
 
-    requestAnimationFrame(function() {
-        this.update.bind(this, context);
-    });
+    // Update clients
+    // TODO tickrate
+    // socket.emit("clientmessage", this);
+    requestAnimationFrame(this.update.bind(this));
 };
 
 Pong.prototype.contains = function(id) {

@@ -20,10 +20,10 @@
     var game = new Pong(canvas);
     var ball = new Projectile(2, {"dx": 2, "dy": 2}, {"x": canvas.width / 2, "y": canvas.height / 2});
 
-    var player = new Player("Test", "Side", {"x": 0, "y": canvas.height / 2}, {
+    var player = new Player({"x": 0, "y": canvas.height / 2}, {
         "width": 20,
         "height": 60
-    }, "Shape", "#FF0000");
+    }, "#FF0000", 20);
 
     socket.emit("newplayer", "hello");
 
@@ -33,18 +33,21 @@
             game = new Pong(canvas);
             game.projectile = ball;
         } else {
-//            console.log("is not null...");
+            console.log("is not null...");
             reviveGame(data);
         }
         game.addPlayer(player);
-
-        console.log(game);
-        game.draw(canvas);
+        console.log(player);
+//        game.draw(canvas);
 
         socket.emit("clientmessage", game);
+
+        player.initKeyEvents();
+
     });
 
     function reviveGame(json) {
+//        console.log("Reviving game...");
         game.players = [];
         for (var i = 0; i < json.players.length; i++) {
             game.players.push(Player.revive(json.players[i]));
@@ -52,6 +55,10 @@
         game.nextId = json.nextId;
         game.projectile = Projectile.revive(json.projectile);
         game.canvas = canvas;
+
+        if(game.players.length === 2) {
+            game.start();
+        }
 
     }
     socket.on("servermessage", function (data) {
