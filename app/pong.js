@@ -79,7 +79,7 @@ Pong.prototype.draw = function () {
  */
 Pong.prototype.start = function() {
     requestAnimationFrame(function() {
-        this.update(this.canvas.getContext("2d"));
+        this.update.bind(this, this.canvas.getContext("2d"));
     });
 };
 
@@ -99,7 +99,7 @@ Pong.prototype.update = function(context) {
     this.draw();
 
     requestAnimationFrame(function() {
-        this.update(context);
+        this.update.bind(this, context);
     });
 };
 
