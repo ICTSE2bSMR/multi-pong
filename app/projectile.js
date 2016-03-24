@@ -20,7 +20,6 @@ var Projectile = function (radius, speed, startPosition) {
     this.radius = radius;
     this.speed = speed;
     this.position = startPosition;
-    this.lastPosition = {"x" : 0, "y" : 0};
     this.gameOver = false;
 };
 /**
@@ -62,9 +61,6 @@ Projectile.revive = function (json) {
  * @author Sander
  */
 Projectile.prototype.move = function (canvas, players) {
-
-    this.lastPosition.x = this.position.x;
-    this.lastPosition.y = this.position.y;
     this.position.x += this.speed.dx;
     this.position.y += this.speed.dy;
 

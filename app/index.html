@@ -66,11 +66,7 @@
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-//        console.log(game);
-//        console.log(player);
         player.update();
-
-//        console.log(ball.position);
 
         if ((game.player1 !== null && game.player1 !== undefined) &&
                 (game.player2 !== null && game.player2 !== undefined)) {
@@ -85,7 +81,6 @@
 
         if (game.projectile !== null && game.projectile !== undefined)
             game.projectile.draw(ctx);
-
 
         socket.emit("ballupdate", game.projectile);
         socket.emit("clientupdate", player);
