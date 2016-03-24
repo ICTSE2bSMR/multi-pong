@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <title>Node</title>
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 
-<canvas id="pong" width="400" height="400"></canvas>
+<!--<canvas id="pong" width="400" height="400"></canvas>-->
+
+<section>
+    <canvas id="myCanvas"></canvas>
+</section>
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="player.js"></script>
@@ -17,13 +22,16 @@
 
     var game = {};
 
-    var canvas = document.getElementById("pong");
-    var ball = new Projectile(2, {"dx": 2, "dy": 2}, {"x": canvas.width / 2, "y": canvas.height / 2});
+    var width = $("#myCanvas").css("width").split("p");
+    var canvas = document.getElementById("myCanvas");
+    canvas.width = width[0];
+    canvas.height = width[0];
 
-    var player = new Player({"x": 0, "y": canvas.height / 2}, {
-        "width": 20,
-        "height": 60
-    }, "#FF0000", 20);
+    var playerheight = width[0] / 10;
+    var y = (width[0] / 2) - (playerheight / 2);
+    var ball = new Projectile(10, {"dx": 3, "dy": 2}, {"x": 100, "y": 100});
+
+    var player = new Player({"x": 10, "y": y}, {"width": 10, "height": playerheight}, "#FF0000", 20);
 
     socket.emit("newplayer");
 
@@ -54,8 +62,6 @@
         requestAnimationFrame(mainLoop);
     });
 
-
-
     function mainLoop() {
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -64,11 +70,13 @@
 //        console.log(player);
         player.update();
 
+//        console.log(ball.position);
+
         if ((game.player1 !== null && game.player1 !== undefined) &&
                 (game.player2 !== null && game.player2 !== undefined)) {
             ball.move(canvas, [game.player1, game.player2]);
-            socket.emit("ballupdate", ball);
         }
+
         if (game.player1 !== null && game.player1 !== undefined)
             game.player1.draw(ctx);
 
@@ -78,6 +86,8 @@
         if (game.projectile !== null && game.projectile !== undefined)
             game.projectile.draw(ctx);
 
+
+        socket.emit("ballupdate", game.projectile);
         socket.emit("clientupdate", player);
 
         requestAnimationFrame(mainLoop);
@@ -93,8 +103,11 @@
                 game[o].position = data.position;
             }
     });
-    socket.on("ballupdatemessage", function(data) {
-        ball.position = data.position;
+    socket.on("ballupdatemessage", function (data) {
+        // Check if the difference is greater than 2, as to not create unnecessary updates.
+        if (ball.position.x - data.position.x >= 2 &&
+                ball.position.y - data.position.y >= 2)
+            ball.position = data.position;
 //        game.projectile.position
     });
     socket.on("playerdisconnectmessage", function (data) {

@@ -84,6 +84,7 @@ ios.sockets.on("connection", function(socket) {
     });
 
     socket.on("ballupdate", function(data) {
+        // console.log(data.position);
         socket.broadcast.emit("ballupdatemessage", data);
     });
 
