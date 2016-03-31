@@ -63,6 +63,10 @@
         });
     });
 
+    $(window).on('resize', function(e) {
+        // TODO resize projectile and players etc.
+    });
+
     function init() {
 //        console.log(room);
         socket.emit("newplayer", room);
