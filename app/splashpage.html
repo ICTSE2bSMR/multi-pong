@@ -10,9 +10,11 @@ and open the template in the editor.
         <meta charset="windows-1252">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+        <script src="JavaScript/PongJS.js" type="text/javascript"></script>
         <link href='https://fonts.googleapis.com/css?family=Orbitron:500' rel='stylesheet' type='text/css'>
         <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
         <link href="splashCSS.css" rel="stylesheet" type="text/css"/>
+        <link href="Test/TestStijl.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
 
@@ -23,90 +25,6 @@ and open the template in the editor.
         </div>
 
         <script>
-            var gamestate = "splash";
-            window.addEventListener('keydown', this.doKeyDown, false);
-            var menuHTML = "<div id='splash'><span id='header'>Multiplayer - Pong</span><br><ul class='menu_list'><li class='selected' id='play'>Play</li><li id='settings'>Settings</li><li id='highscores'>Highscores</li></ul></div>";
-            var lobbyHTML = "<div><span id='header'>lobbies</span><br><div id='lobby_div'><ul id='lobbies'><li class='lobby'>Naam:<br>Aantal spelers:<br>Toeganslichtje<br></li></ul></div><div id='lobcreate'><button onClick='newLobby()'>New Lobby</button></div></div>";
-
-
-            var splashImage = document.getElementById("splash");
-
-            function newLobby() {
-                $("#lobcreate").html("<form id='createform' method='post'><br>\n\
-        <label for='naam'>Naam:</label><input type='text' name='naam'><br>\n\
-<input type='submit' value='create!'>");
-            }
-            ;
-
-            function onGamestateChange(gamestate) {
-                switch (gamestate) {
-                    case "menu":
-                        clearBody();
-                        document.body.innerHTML = menuHTML;
-                        break;
-                    case "lobby":
-                        clearBody();
-                        document.body.innerHTML = lobbyHTML;
-                        break;
-                }
-            }
-            ;
-
-            function clearBody() {
-                document.body.innerHTML = "";
-            }
-
-            function doKeyDown(e) {
-
-                //check if document is ready.
-                //Keycode 32 = the spacebar, if it is pressed the player, will continue to the menu screen.
-                if (gamestate === "splash") {
-                    if (e.keyCode === 32) {
-                        clearBody();
-                        //link to menu
-                        gamestate = "menu";
-                        onGamestateChange(gamestate);
-                    }
-                } else if (gamestate === "menu") {
-
-                    if (e.keyCode === 13) {//if pressed key = enter  
-                        $(".selected").each(function () {
-                            var id = $(this).attr("id");
-                            if (id === "play") {
-                                gamestate = "lobby";
-                                onGamestateChange(gamestate);
-                            }
-                        });
-
-                    } else if (e.keyCode === 38) {//if pressed key = up
-
-                        $(".selected").each(function () {
-                            var id = $(this).attr("id");
-                            $(this).removeClass("selected");
-                            if (id === "play") {
-                                $("#highscores").addClass("selected");
-                            } else if (id === "highscores") {
-                                $("#settings").addClass("selected");
-                            } else if (id === "settings") {
-                                $("#play").addClass("selected");
-                            }
-
-                        });
-                    } else if (e.keyCode === 40) { //if pressed key = down
-                        $(".selected").each(function () {
-                            var id = $(this).attr("id");
-                            $(this).removeClass("selected");
-                            if (id === "play") {
-                                $("#settings").addClass("selected");
-                            } else if (id === "highscores") {
-                                $("#play").addClass("selected");
-                            } else if (id === "settings") {
-                                $("#highscores").addClass("selected");
-                            }
-                        });
-                    }
-                }
-            }
 
         </script>
 
