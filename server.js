@@ -34,7 +34,7 @@ function joinRoom(request, response) {
 }
 
 function urlRequest(url, response) {
-    var filePath = "";
+    var filePath = __dirname;
     switch (url) {
         case "/":
         case "/index":
