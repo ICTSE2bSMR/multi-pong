@@ -47,9 +47,9 @@
                 selected = this.querySelector("input[name='room']:checked");
 
         if (instance.player1 !== undefined) {
+            console.log("want to dc");
             instance = {};
             socket.emit("disconnecting", {"roomNumber": room, "player": player});
-            socket.close();
         }
 
         $.ajax({
@@ -72,26 +72,30 @@
     if (socket !== undefined) {
 
         socket.on("servernewplayer", function (data) {
-//            console.log(data);
+            console.log("SERVERNEWPLAYER", data);
             if (data.instance === null) {
                 // This means that we have to create a new game
                 instance.projectile = ball;
                 player.id = data.id;
                 instance.player1 = player;
+                player.position.x = player.size.width;
+                ball.position = {"x": canvas.width / 2, "y": canvas.height / 2};
+                ball.speed = {"dx": 3, "dy": 2};
             } else {
-                console.log(data);
-                if (data.id !== player.id) {
-                    console.log("New player...");
-                    instance.player1 = Player.revive(data.instance.player1);
-                    player.id = data.id;
-                    instance.player2 = player;
-                    player.position.x = canvas.width - player.size.width;
-                    ball = Projectile.revive(data.instance.projectile);
-                    instance.projectile = ball;
-                }
+//                console.log(data, player.id);
+//                if (data.id !== player.id) {
+                console.log("New player...");
+                instance.player1 = Player.revive(data.instance.player1);
+                player.id = data.id;
+                instance.player2 = player;
+                player.position.x = canvas.width - player.size.width;
+                ball = Projectile.revive(data.instance.projectile);
+                instance.projectile = ball;
+//                }
 
             }
 
+            console.log(instance);
             socket.emit("clientmessage", {"roomNumber": room, "instance": instance});
 
             requestAnimationFrame(mainLoop);
@@ -118,7 +122,7 @@
             // Check if the difference is greater than 2, as to not create unnecessary updates.
 //            if (data.roomNumber === room) {
 //                console.log(data);
-            if (ball.position.x - data.projectile.position.x >= 2 &&
+            if (data.projectile !== undefined && ball.position.x - data.projectile.position.x >= 2 &&
                     ball.position.y - data.projectile.position.y >= 2)
                 ball.position = data.projectile.position;
 //            }
@@ -126,7 +130,7 @@
         });
 
         socket.on("playerdisconnectmessage", function (data) {
-            console.log("SOMEONE DISCONNECTED: ", data);
+//            console.log("SOMEONE DISCONNECTED: ", data);
             if (data.player1 === undefined)
                 instance.player1 = undefined;
             else if (data.player2 === undefined)

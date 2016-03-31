@@ -79,15 +79,16 @@ var game = {
 function sendToOtherPlayer(sender, updateType, objectToSend, roomNumber, socket) {
     // console.log("Sender: ", sender, " UpdateType: ", updateType, " Current game: ", game);
     // console.log(objectToSend);
-    var receiverId = (game[roomNumber].player1.id !== sender)               // Check if the sender is not player1
-        ? game[roomNumber].player1.id                                       // if so, the receiver is player1.
-        : ((game[roomNumber].player2 !== undefined)                         // Else, if player2 is not undefined
-        ? game[roomNumber].player2.id                                       // the receiver is player2
-        : undefined);                                                       // if player2 is undefined, set var to undefined
+    if(game[roomNumber] !== null) {
+        var receiverId = (game[roomNumber].player1 !== undefined && game[roomNumber].player1 !== null &&
+        game[roomNumber].player1.id !== sender)             // Check if the sender is not player1
+            ? game[roomNumber].player1.id                                       // if so, the receiver is player1.
+            : ((game[roomNumber].player2 !== undefined)                         // Else, if player2 is not undefined
+            ? game[roomNumber].player2.id                                       // the receiver is player2
+            : undefined);                                                       // if player2 is undefined, set var to undefined
 
-    if(receiverId !== undefined) {                                          // If the receiver is undefined, we don't have to send an update
-        // ios.clients[receiverId].emit(updateType, objectToSend);
-        socket.broadcast.to(receiverId).emit(updateType, objectToSend);
+        if (receiverId !== undefined)                                           // If the receiver is undefined, we don't have to send an update
+            socket.broadcast.to(receiverId).emit(updateType, objectToSend);
     }
 }
 
@@ -99,9 +100,12 @@ ios.sockets.on("connection", function (socket) {
         var room = game[data.roomNumber];
         if (data.player.id === room.player1.id)
             room.player1 = undefined;
-        else if(data.player.id === room.player2.id)
+        else if (data.player.id === room.player2.id)
             room.player2 = undefined;
 
+        // console.log(room);
+        if(room.player1 === undefined && room.player2 === undefined)
+            game[data.roomNumber] = null;
         sendToOtherPlayer(socket.id, "playerdisconnectmessage", room, data.roomNumber, socket);
         // socket.broadcast.emit("playerdisconnectmessage", data);
     });
@@ -116,16 +120,19 @@ ios.sockets.on("connection", function (socket) {
     socket.on("playerupdate", function (data) {
         var targetRoom = game[data.roomNumber],
             updatedPlayer;
+        if(targetRoom !== null) {
+            if (targetRoom.player1 !== undefined && targetRoom.player1.id === data.player.id)
+                updatedPlayer = targetRoom.player1;
+            else if (targetRoom.player2 !== undefined && targetRoom.player2.id === data.player.id)
+                updatedPlayer = targetRoom.player2;
 
-        if (targetRoom.player1 !== undefined && targetRoom.player1.id === data.player.id)
-            updatedPlayer = targetRoom.player1;
-        else if (targetRoom.player2 !== undefined && targetRoom.player2.id === data.player.id)
-            updatedPlayer = targetRoom.player2;
-
+            // console.log(data);
+            if (updatedPlayer !== undefined) {
+                updatedPlayer.position = data.player.position;
+                sendToOtherPlayer(data.player.id, "playerupdatemessage", targetRoom, data.roomNumber, socket);
+            }
+        }
         // console.log(data);
-        updatedPlayer.position = data.player.position;
-        // console.log(data);
-        sendToOtherPlayer(data.player.id, "playerupdatemessage", targetRoom, data.roomNumber, socket);
 
         // socket.broadcast.emit("updatemessage", {"roomNumber": data.roomNumber, "instance": targetRoom});
     });
@@ -134,8 +141,10 @@ ios.sockets.on("connection", function (socket) {
         // console.log(data.position);
         // game[data.roomNumber]
         // console.log(game);
-        game[data.roomNumber].projectile.x = data.projectile.x;
-        game[data.roomNumber].projectile.y = data.projectile.y;
+        if (game[data.roomNumber] !== null && game[data.roomNumber].projectile !== undefined && game[data.roomNumber].projectile.x !== undefined && game[data.roomNumber].projectile.y !== undefined) {
+            game[data.roomNumber].projectile.x = data.projectile.x;
+            game[data.roomNumber].projectile.y = data.projectile.y;
+        }
         sendToOtherPlayer(socket.id, "ballupdatemessage", data, data.roomNumber, socket);
     });
 
@@ -144,6 +153,7 @@ ios.sockets.on("connection", function (socket) {
         if (ios.sockets.connected[socket.id]) {
             console.log("New player wants to join room nr: ", data);
             console.log("sending info to new player...");
+
             ios.sockets.connected[socket.id].emit("servernewplayer", {"id": socket.id, "instance": game[data]});
         }
     });

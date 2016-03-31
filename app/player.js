@@ -71,7 +71,7 @@ Player.prototype.move = function (y, canvas) {
 var keysDown = {};
 
 window.addEventListener("keydown", function (event) {
-    console.log("Keydown");
+    // console.log("Keydown");
     keysDown[event.keyCode] = true;
 });
 
