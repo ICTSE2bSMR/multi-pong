@@ -27,7 +27,7 @@
 <script>
     var socket = io.connect("http://localhost:8000");
 
-    var game = {};
+    var instance = {};
     var room;
     var width = $("#myCanvas").css("width").split("p");
     var canvas = document.getElementById("myCanvas");
@@ -45,6 +45,12 @@
         var url = $(this).attr("action"),
                 method = $(this).attr("method"),
                 selected = this.querySelector("input[name='room']:checked");
+
+        if (instance.player1 !== undefined) {
+            instance = {};
+            socket.emit("disconnecting", {"roomNumber": room, "player": player});
+            socket.close();
+        }
 
         $.ajax({
             url: url,
@@ -67,65 +73,64 @@
 
         socket.on("servernewplayer", function (data) {
 //            console.log(data);
-            if (data.game === null) {
+            if (data.instance === null) {
                 // This means that we have to create a new game
-                game.projectile = ball;
+                instance.projectile = ball;
                 player.id = data.id;
-                game.player1 = player;
+                instance.player1 = player;
             } else {
                 console.log(data);
                 if (data.id !== player.id) {
                     console.log("New player...");
-                    game.player1 = Player.revive(data.game.game.player1);
+                    instance.player1 = Player.revive(data.instance.player1);
                     player.id = data.id;
-                    game.player2 = player;
+                    instance.player2 = player;
                     player.position.x = canvas.width - player.size.width;
-                    ball = Projectile.revive(data.game.game.projectile);
-                    game.projectile = ball;
+                    ball = Projectile.revive(data.instance.projectile);
+                    instance.projectile = ball;
                 }
 
             }
 
-            socket.emit("clientmessage", {"roomNumber": room, "game": game});
+            socket.emit("clientmessage", {"roomNumber": room, "instance": instance});
 
             requestAnimationFrame(mainLoop);
         });
 
         socket.on("servermessage", function (data) {
-            if (data.roomNumber === room) {
-                game.player2 = Player.revive(data.game.player2);
-            }
+//            console.log(data);
+            instance.player2 = Player.revive(data.instance.player2);
         });
 
-        socket.on("updatemessage", function (data) {
-//        console.log("Received update message");
-            if (data.game.roomNumber === room) {
+        socket.on("playerupdatemessage", function (data) {
+//            console.log("Received update message:", data);
 //                console.log(data);
-                if(game.player1 !== undefined && game.player2 !== undefined) {
-                    if(data.game.game.player1.id !== player.id) {
-                        game.player1.position = data.game.game.player1.position;
-                    } else {
-                        game.player2.position = data.game.game.player2.position;
-                    }
+            if (instance.player1 !== undefined && instance.player2 !== undefined) {
+                if (data.player1.id !== player.id) {
+                    instance.player1.position = data.player1.position;
+                } else {
+                    instance.player2.position = data.player2.position;
                 }
             }
         });
 
         socket.on("ballupdatemessage", function (data) {
             // Check if the difference is greater than 2, as to not create unnecessary updates.
-            if (data.roomNumber === room) {
+//            if (data.roomNumber === room) {
 //                console.log(data);
-                if (ball.position.x - data.projectile.position.x >= 2 &&
-                        ball.position.y - data.projectile.position.y >= 2)
-                    ball.position = data.projectile.position;
-            }
+            if (ball.position.x - data.projectile.position.x >= 2 &&
+                    ball.position.y - data.projectile.position.y >= 2)
+                ball.position = data.projectile.position;
+//            }
 //        game.projectile.position
         });
 
         socket.on("playerdisconnectmessage", function (data) {
-            for (var o in game)
-                if (game[o].id === data.id)
-                    game[o] = null;
+            console.log("SOMEONE DISCONNECTED: ", data);
+            if (data.player1 === undefined)
+                instance.player1 = undefined;
+            else if (data.player2 === undefined)
+                instance.player2 = undefined;
         });
     }
 
@@ -135,35 +140,34 @@
 
         player.update();
 
-        if ((game.player1 !== null && game.player1 !== undefined) &&
-                (game.player2 !== null && game.player2 !== undefined)) {
-            ball.move(canvas, [game.player1, game.player2]);
+        if ((instance.player1 !== null && instance.player1 !== undefined) &&
+                (instance.player2 !== null && instance.player2 !== undefined)) {
+            ball.move(canvas, [instance.player1, instance.player2]);
         }
 
-        if (game.player1 !== null && game.player1 !== undefined)
-            game.player1.draw(ctx);
+        if (instance.player1 !== null && instance.player1 !== undefined)
+            instance.player1.draw(ctx);
 
-        if (game.player2 !== null && game.player2 !== undefined)
-            game.player2.draw(ctx);
+        if (instance.player2 !== null && instance.player2 !== undefined)
+            instance.player2.draw(ctx);
 
-        if (game.projectile !== null && game.projectile !== undefined)
-            game.projectile.draw(ctx);
+        if (instance.projectile !== null && instance.projectile !== undefined)
+            instance.projectile.draw(ctx);
 
-        socket.emit("ballupdate", {"roomNumber": room, "projectile": game.projectile});
-        socket.emit("clientupdate", {"roomNumber": room, "player": player});
+        socket.emit("ballupdate", {"roomNumber": room, "projectile": instance.projectile});
+        socket.emit("playerupdate", {"roomNumber": room, "player": player});
 
         requestAnimationFrame(mainLoop);
     }
 
 
     $(window).on('beforeunload', function () {
-        for (var o in game) {
+        for (var o in instance) {
             if (o.id === player.id) {
                 o = null;
             }
         }
         if (socket !== undefined) {
-            socket.emit("disconnecting", player);
             socket.close();
         }
     });
