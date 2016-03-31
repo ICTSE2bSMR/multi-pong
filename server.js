@@ -151,10 +151,12 @@ ios.sockets.on("connection", function (socket) {
     socket.on("newplayer", function (data) {
         // console.log("Player connected: ", socket.id);
         if (ios.sockets.connected[socket.id]) {
-            console.log("New player wants to join room nr: ", data);
-            console.log("sending info to new player...");
+            if(game[data] === null || (game[data].player1 === undefined || game[data].player2 === undefined)) {
+                console.log("New player wants to join room nr: ", data);
+                console.log("sending info to new player...");
 
-            ios.sockets.connected[socket.id].emit("servernewplayer", {"id": socket.id, "instance": game[data]});
+                ios.sockets.connected[socket.id].emit("servernewplayer", {"id": socket.id, "instance": game[data]});
+            }
         }
     });
 
