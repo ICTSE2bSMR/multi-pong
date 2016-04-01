@@ -92,6 +92,16 @@ function sendToOtherPlayer(sender, updateType, objectToSend, roomNumber, socket)
     }
 }
 
+function sendToRoom(roomNumber, updateType, socket) {
+    var targetRoom = game[roomNumber];
+    if(targetRoom !== null) {
+        if(targetRoom.player1 !== undefined)
+            socket.broadcast.to(targetRoom.player1.id).emit(updateType);
+        if(targetRoom.player2 !== undefined)
+            socket.broadcast.to(targetRoom.player2.id).emit(updateType);
+    }
+}
+
 ios.sockets.on("connection", function (socket) {
 
     socket.send(socket.id);
@@ -129,21 +139,22 @@ ios.sockets.on("connection", function (socket) {
             // console.log(data);
             if (updatedPlayer !== undefined) {
                 updatedPlayer.position = data.player.position;
+                updatedPlayer.score = data.player.score;
+                updatedPlayer.ready = data.player.ready;
                 sendToOtherPlayer(data.player.id, "playerupdatemessage", targetRoom, data.roomNumber, socket);
             }
         }
-        // console.log(data);
-
-        // socket.broadcast.emit("updatemessage", {"roomNumber": data.roomNumber, "instance": targetRoom});
     });
 
     socket.on("ballupdate", function (data) {
         // console.log(data.position);
         // game[data.roomNumber]
-        // console.log(game);
-        if (game[data.roomNumber] !== null && game[data.roomNumber].projectile !== undefined && game[data.roomNumber].projectile.x !== undefined && game[data.roomNumber].projectile.y !== undefined) {
-            game[data.roomNumber].projectile.x = data.projectile.x;
-            game[data.roomNumber].projectile.y = data.projectile.y;
+        // console.log(game[data.roomNumber]);
+        if (game[data.roomNumber] !== null) {
+            game[data.roomNumber].projectile.position = data.projectile.position;
+
+            // console.log(game[data.roomNumber].projectile.initialData);
+
         }
         sendToOtherPlayer(socket.id, "ballupdatemessage", data, data.roomNumber, socket);
     });

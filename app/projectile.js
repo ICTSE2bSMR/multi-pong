@@ -22,6 +22,20 @@ var Projectile = function (radius, speed, startPosition) {
     this.position = startPosition;
     this.gameOver = false;
 };
+
+
+Projectile.prototype.update = function (canvas, players, room, socket) {
+    var oldX = this.position.x,
+        oldY = this.position.y;
+    this.move(canvas, players);
+
+    if ((this.position.x !== oldX || this.position.y !== oldY) || this.gameOver) {
+        this.gameOver = false;
+        socket.emit("ballupdate", {"roomNumber": room, "projectile": this});
+    }
+
+};
+
 /**
  * This method simply returns radius*2, you could use this to get the width or height
  * of the projectile.
@@ -88,14 +102,20 @@ Projectile.prototype.move = function (canvas, players) {
 
     // this.draw(canvas.getContext("2d"));
     if (this.position.x > canvas.width || this.position.x < 0) {
-        this.gameOver = true;
-//        var player_won = (this.position.x > canvas.width) ? 1 : 2;
-//        window.player_id_having_the_ball = (player_won == 1) ? 2 : 1;
-//        finish_round(player_won);
-//        socket.json.emit("end_of_the_round", {player_won: player_won, room_id: window.room_id});
+        if (this.position.x > canvas.width)
+            players[0].score++;
+        if (this.position.x < 0)
+            players[1].score++;
+
+        this.finishRound(canvas, players);
     }
 };
 
-Projectile.prototype.finishRound = function (player) {
-
+Projectile.prototype.finishRound = function (canvas, players) {
+    for (var i in players) {
+        players[i].ready = false;
+        this.position.x = canvas.width / 2;
+        this.position.y = canvas.height / 2;
+    }
+    this.gameOver = true;
 };
