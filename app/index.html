@@ -146,7 +146,7 @@
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        player.update();
+        player.update(canvas);
 
         if ((instance.player1 !== null && instance.player1 !== undefined) &&
                 (instance.player2 !== null && instance.player2 !== undefined)) {

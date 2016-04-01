@@ -82,7 +82,7 @@ window.addEventListener("keyup", function (event) {
 /**
  * @author Sander
  */
-Player.prototype.update = function () {
+Player.prototype.update = function (canvas) {
 //Keycode 40 = the arrowdown key, if it is pressed the player, obviously, will move down.
     //There is also a check to prevent the player from leaving the playing field.
     // console.log("Update... Keys -> ", keysDown);
@@ -90,12 +90,12 @@ Player.prototype.update = function () {
     for (var key in keysDown) {
         var value = Number(key);
         if (value === 40) {
-            this.move(7, 0);
+            this.move(7, canvas);
             //Keycode 38 = the arrowup key, if it is pressed the player, obviously, will move up.
         } else if (value === 38) {
-            this.move(-7, 0);
+            this.move(-7, canvas);
         } else {
-            this.move(0, 0);
+            this.move(0, canvas);
         }
     }
 };
