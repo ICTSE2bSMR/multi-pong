@@ -7,11 +7,53 @@ section{
     width: 100%;
 }
 
+#header{
+    text-align: center;
+    font-family: "Orbitron", monospace;
+    font-size: 3em;
+    display: block;
+}
+
+form{
+    margin: 0 auto;
+    width: 100px;
+    display: block;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
 #myCanvas{
     margin: 0 auto;
-    width: 50%;
-    height: 50%;
+    width: 400px;
+    height: 400px;
     border: 3px solid black;
     /* Needs to be display block, otherwise it won't center */
     display: block;
+}
+
+.score-board {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.score-board .player {
+    display: inline-block;
+    margin: 0 10% 0 10%;
+    padding: 0;
+}
+
+.score-board .player p {
+    font-size: 2em;
+}
+
+section {
+    text-align: center;
+}
+
+section h2 {
+    color: red;
+}
+
+#ready-section h3 {
+    display: inline;
 }

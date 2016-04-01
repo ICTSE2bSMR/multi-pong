@@ -5,44 +5,17 @@
     <title>Node</title>
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css"/>
-    <style>
-        .score-board {
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .score-board .player {
-            display: inline-block;
-            margin: 0 10% 0 10%;
-            padding: 0;
-        }
-
-        .score-board .player p {
-            font-size: 2em;
-        }
-
-        section {
-            text-align: center;
-        }
-
-        section h2 {
-            color: red;
-        }
-
-        #ready-section h3 {
-            display: inline;
-        }
-    </style>
 </head>
 <body>
-
-<form action="http://localhost:8000" id="roomSelector" method="post">
-    <input type="radio" name="room" value="0"> Room 0 <br>
-    <input type="radio" name="room" value="1"> Room 1 <br>
-    <input type="radio" name="room" value="2"> Room 2 <br>
-    <input type="submit" value="Join room">
-</form>
-
+<section>
+    <span id="header">Multiplayer - Pong</span><br>
+    <form action="http://localhost:8000" id="roomSelector" method="post">
+        <input type="radio" name="room" value="0"> Room 0 <br>
+        <input type="radio" name="room" value="1"> Room 1 <br>
+        <input type="radio" name="room" value="2"> Room 2 <br>
+        <input type="submit" value="Join room">
+    </form>
+</section>
 
 <section>
     <div class="score-board">
@@ -57,10 +30,12 @@
 
     <div id="ready-section">
         <div class="player">
-            <h3>Player 1:</h3><h3>Not ready</h3>
+            <h3>Player 1:</h3>
+            <h3>Not ready</h3>
         </div>
         <div class="player">
-            <h3>Player 2:</h3><h3>Not ready</h3>
+            <h3>Player 2:</h3>
+            <h3>Not ready</h3>
         </div>
         <h3>Press space to set yourself to ready</h3>
     </div>
@@ -213,7 +188,7 @@
         if (instance.player1 === undefined || instance.player2 === undefined)
             waitingLabel.style.display = "block";
 
-        if(instance.player1 !== undefined) {
+        if (instance.player1 !== undefined) {
             if (instance.player1.ready) {
                 player1Ready.style.color = "green";
                 player1Ready.innerHTML = "Ready";
@@ -222,7 +197,7 @@
                 player1Ready.innerHTML = "Not ready";
             }
         }
-        if(instance.player2 !== undefined) {
+        if (instance.player2 !== undefined) {
             if (instance.player2.ready) {
                 player2Ready.style.color = "green";
                 player2Ready.innerHTML = "Ready";
