@@ -1,193 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Node</title>
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <head>
+        <meta charset="UTF-8">
+        <title>Node</title>
+        <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
 
-</head>
-<body>
+    </head>
+    <body>
 
-<form action="http://localhost:8000" id="roomSelector" method="post">
-    <input type="radio" name="room" value="0"> Room 0 <br>
-    <input type="radio" name="room" value="1"> Room 1 <br>
-    <input type="radio" name="room" value="2"> Room 2 <br>
-    <input type="submit" value="Join room">
-</form>
-
-
-<section>
-    <canvas id="myCanvas"></canvas>
-</section>
-
-<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-<script src="player.js"></script>
-<script src="projectile.js"></script>
-<script>
-    var socket = io.connect("http://localhost:8000");
-
-    var instance = {};
-    var room;
-    var width = $("#myCanvas").css("width").split("p");
-    var canvas = document.getElementById("myCanvas");
-    canvas.width = width[0];
-    canvas.height = width[0];
-
-    var playerheight = width[0] / 10;
-    var y = (width[0] / 2) - (playerheight / 2);
-    var ball = new Projectile(10, {"dx": 3, "dy": 2}, {"x": 100, "y": 100});
-
-    var player = new Player({"x": 10, "y": y}, {"width": 10, "height": playerheight}, "#FF0000", 20);
-
-    $("#roomSelector").submit(function (e) {
-        e.preventDefault();
-        var url = $(this).attr("action"),
-                method = $(this).attr("method"),
-                selected = this.querySelector("input[name='room']:checked");
-
-        if (instance.player1 !== undefined) {
-            console.log("want to dc");
-            instance = {};
-            socket.emit("disconnecting", {"roomNumber": room, "player": player});
-        }
-
-        $.ajax({
-            url: url,
-            type: method,
-            data: "room=" + selected.value,
-            success: function (data) {
-                room = selected.value;
-                init();
-            }
-        });
-    });
-
-    $(window).on('resize', function(e) {
-        // TODO resize projectile and players etc.
-    });
-
-    function init() {
-//        console.log(room);
-        socket.emit("newplayer", room);
-    }
+        <form action="http://localhost:8000" id="roomSelector" method="post">
+            <input type="radio" name="room" value="0"> Room 0 <br>
+            <input type="radio" name="room" value="1"> Room 1 <br>
+            <input type="radio" name="room" value="2"> Room 2 <br>
+            <input type="submit" value="Join room">
+        </form>
 
 
-    if (socket !== undefined) {
+        <section>
+            <canvas id="myCanvas"></canvas>
+        </section>
 
-        socket.on("servernewplayer", function (data) {
-            console.log("SERVERNEWPLAYER", data);
-            if (data.instance === null) {
-                // This means that we have to create a new game
-                instance.projectile = ball;
-                player.id = data.id;
-                instance.player1 = player;
-                player.position.x = player.size.width;
-                ball.position = {"x": canvas.width / 2, "y": canvas.height / 2};
-                ball.speed = {"dx": 3, "dy": 2};
-            } else {
-//                console.log(data, player.id);
-//                if (data.id !== player.id) {
-                console.log("New player...");
-                instance.player1 = Player.revive(data.instance.player1);
-                player.id = data.id;
-                instance.player2 = player;
-                player.position.x = canvas.width - player.size.width;
-                ball = Projectile.revive(data.instance.projectile);
-                instance.projectile = ball;
-//                }
+        <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+        <script src="player.js"></script>
+        <script src="projectile.js"></script>
+        <script>
+            var socket = io.connect("http://localhost:8000");
 
-            }
+            var instance = {};
+            var room;
+            var width = $("#myCanvas").css("width").split("p");
+            var canvas = document.getElementById("myCanvas");
+            canvas.width = width[0];
+            canvas.height = width[0];
 
-            console.log(instance);
-            socket.emit("clientmessage", {"roomNumber": room, "instance": instance});
+            var playerheight = width[0] / 10;
+            var y = (width[0] / 2) - (playerheight / 2);
+            var ball = new Projectile(5, {"dx": 3, "dy": 2}, {"x": 100, "y": 100});
 
-            requestAnimationFrame(mainLoop);
-        });
+            var player = new Player({"x": 10, "y": y}, {"width": 10, "height": playerheight}, "#FF0000", 20);
 
-        socket.on("servermessage", function (data) {
-//            console.log(data);
-            instance.player2 = Player.revive(data.instance.player2);
-        });
+            $("#roomSelector").submit(function (e) {
+                e.preventDefault();
+                var url = $(this).attr("action"),
+                        method = $(this).attr("method"),
+                        selected = this.querySelector("input[name='room']:checked");
 
-        socket.on("playerupdatemessage", function (data) {
-//            console.log("Received update message:", data);
-//                console.log(data);
-            if (instance.player1 !== undefined && instance.player2 !== undefined) {
-                if (data.player1.id !== player.id) {
-                    instance.player1.position = data.player1.position;
-                } else {
-                    instance.player2.position = data.player2.position;
+                if (instance.player1 !== undefined) {
+                    console.log("want to dc");
+                    instance = {};
+                    socket.emit("disconnecting", {"roomNumber": room, "player": player});
                 }
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: "room=" + selected.value,
+                    success: function (data) {
+                        room = selected.value;
+                        init();
+                    }
+                });
+            });
+
+            $(window).on('resize', function (e) {
+                // TODO resize projectile and players etc.
+            });
+
+            function init() {
+                //        console.log(room);
+                socket.emit("newplayer", room);
             }
-        });
-
-        socket.on("ballupdatemessage", function (data) {
-            // Check if the difference is greater than 2, as to not create unnecessary updates.
-//            if (data.roomNumber === room) {
-//                console.log(data);
-            if (data.projectile !== undefined && ball.position.x - data.projectile.position.x >= 2 &&
-                    ball.position.y - data.projectile.position.y >= 2)
-                ball.position = data.projectile.position;
-//            }
-//        game.projectile.position
-        });
-
-        socket.on("playerdisconnectmessage", function (data) {
-//            console.log("SOMEONE DISCONNECTED: ", data);
-            if (data.player1 === undefined)
-                instance.player1 = undefined;
-            else if (data.player2 === undefined)
-                instance.player2 = undefined;
-        });
-    }
-
-    function mainLoop() {
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        player.update(canvas);
-
-        if ((instance.player1 !== null && instance.player1 !== undefined) &&
-                (instance.player2 !== null && instance.player2 !== undefined)) {
-            ball.move(canvas, [instance.player1, instance.player2]);
-        }
-
-        if (instance.player1 !== null && instance.player1 !== undefined)
-            instance.player1.draw(ctx);
-
-        if (instance.player2 !== null && instance.player2 !== undefined)
-            instance.player2.draw(ctx);
-
-        if (instance.projectile !== null && instance.projectile !== undefined)
-            instance.projectile.draw(ctx);
-
-        socket.emit("ballupdate", {"roomNumber": room, "projectile": instance.projectile});
-        socket.emit("playerupdate", {"roomNumber": room, "player": player});
-
-        requestAnimationFrame(mainLoop);
-    }
 
 
-    $(window).on('beforeunload', function () {
-        for (var o in instance) {
-            if (o.id === player.id) {
-                o = null;
+            if (socket !== undefined) {
+
+                socket.on("servernewplayer", function (data) {
+                    console.log("SERVERNEWPLAYER", data);
+                    if (data.instance === null) {
+                        // This means that we have to create a new game
+                        instance.projectile = ball;
+                        player.id = data.id;
+                        instance.player1 = player;
+                        player.position.x = player.size.width;
+                        ball.position = {"x": canvas.width / 2, "y": canvas.height / 2};
+                        ball.speed = {"dx": 3, "dy": 2};
+                    } else {
+                        //                console.log(data, player.id);
+                        //                if (data.id !== player.id) {
+                        console.log("New player...");
+                        instance.player1 = Player.revive(data.instance.player1);
+                        player.id = data.id;
+                        instance.player2 = player;
+                        player.position.x = canvas.width - player.size.width * 2;
+                        ball = Projectile.revive(data.instance.projectile);
+                        instance.projectile = ball;
+                        //                }
+
+                    }
+
+                    console.log(instance);
+                    socket.emit("clientmessage", {"roomNumber": room, "instance": instance});
+
+                    requestAnimationFrame(mainLoop);
+                });
+
+                socket.on("servermessage", function (data) {
+                    //            console.log(data);
+                    instance.player2 = Player.revive(data.instance.player2);
+                });
+
+                socket.on("playerupdatemessage", function (data) {
+                    //            console.log("Received update message:", data);
+                    //                console.log(data);
+                    if (instance.player1 !== undefined && instance.player2 !== undefined) {
+                        if (data.player1.id !== player.id) {
+                            instance.player1.position = data.player1.position;
+                        } else {
+                            instance.player2.position = data.player2.position;
+                        }
+                    }
+                });
+
+                socket.on("ballupdatemessage", function (data) {
+                    // Check if the difference is greater than 2, as to not create unnecessary updates.
+                    //            if (data.roomNumber === room) {
+                    //                console.log(data);
+                    if (data.projectile !== undefined && ball.position.x - data.projectile.position.x >= 2 &&
+                            ball.position.y - data.projectile.position.y >= 2)
+                        ball.position = data.projectile.position;
+                    //            }
+                    //        game.projectile.position
+                });
+
+                socket.on("playerdisconnectmessage", function (data) {
+                    //            console.log("SOMEONE DISCONNECTED: ", data);
+                    if (data.player1 === undefined)
+                        instance.player1 = undefined;
+                    else if (data.player2 === undefined)
+                        instance.player2 = undefined;
+                });
             }
-        }
-        if (socket !== undefined) {
-            socket.close();
-        }
-    });
+
+            function mainLoop() {
+                var ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                player.update(canvas);
+
+                if ((instance.player1 !== null && instance.player1 !== undefined) &&
+                        (instance.player2 !== null && instance.player2 !== undefined)) {
+                    ball.move(canvas, [instance.player1, instance.player2]);
+                }
+
+                if (instance.player1 !== null && instance.player1 !== undefined)
+                    instance.player1.draw(ctx);
+
+                if (instance.player2 !== null && instance.player2 !== undefined)
+                    instance.player2.draw(ctx);
+
+                if (instance.projectile !== null && instance.projectile !== undefined)
+                    instance.projectile.draw(ctx);
+
+                socket.emit("ballupdate", {"roomNumber": room, "projectile": instance.projectile});
+                socket.emit("playerupdate", {"roomNumber": room, "player": player});
+
+                requestAnimationFrame(mainLoop);
+            }
 
 
-    //    $('#myButton').click(function () {
-    //        var message = $('#msg').val();
-    //        console.log(message);
-    //        socket.emit("clientmessage", game);
-    //    });
+            $(window).on('beforeunload', function () {
+                for (var o in instance) {
+                    if (o.id === player.id) {
+                        o = null;
+                    }
+                }
+                if (socket !== undefined) {
+                    socket.close();
+                }
+            });
 
 
-</script>
-</body>
+            //    $('#myButton').click(function () {
+            //        var message = $('#msg').val();
+            //        console.log(message);
+            //        socket.emit("clientmessage", game);
+            //    });
+
+
+        </script>
+    </body>
 </html>
