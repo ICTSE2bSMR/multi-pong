@@ -9,15 +9,14 @@
     </head>
     <body>
 
-        <form action="http://localhost:8000" id="roomSelector" method="post">
-            <input type="radio" name="room" value="0"> Room 0 <br>
-            <input type="radio" name="room" value="1"> Room 1 <br>
-            <input type="radio" name="room" value="2"> Room 2 <br>
-            <input type="submit" value="Join room">
-        </form>
-
-
         <section>
+            <span id="header">Multiplayer - Pong</span><br>
+            <form action="http://localhost:8000" id="roomSelector" method="post">
+                <input type="radio" name="room" value="0"> Room 0 <br>
+                <input type="radio" name="room" value="1"> Room 1 <br>
+                <input type="radio" name="room" value="2"> Room 2 <br>
+                <input type="submit" value="Join room">
+            </form>
             <canvas id="myCanvas"></canvas>
         </section>
 

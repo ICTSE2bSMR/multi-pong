@@ -7,6 +7,21 @@ section{
     width: 100%;
 }
 
+#header{
+    text-align: center;
+    font-family: "Orbitron", monospace;
+    font-size: 3em;
+    display: block;
+}
+
+form{
+    margin: 0 auto;
+    width: 100px;
+    display: block;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
 #myCanvas{
     margin: 0 auto;
     width: 400px;
