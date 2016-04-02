@@ -36,59 +36,60 @@ var gamestate = "splash";
         document.body.innerHTML = "";
         }
 
-function doKeyDown(e) {
-console.log("KeyDown functie");
+window.onload = func1;
+        function doKeyDown(e) {
+        console.log("KeyDown functie");
 //check if document is ready.
 //Keycode 32 = the spacebar, if it is pressed the player, will continue to the menu screen.
-        if (gamestate === "splash") {
-if (e.keyCode === 32) {
-clearBody();
-        //link to menu
-        gamestate = "menu";
-        onGamestateChange(gamestate);
-}
-} else if (gamestate === "menu") {
-
-if (e.keyCode === 13) {//if pressed key = enter
-$(".selected").each(function () {
-var id = $(this).attr("id");
-        if (id === "play") {
-gamestate = "play";
-        onGamestateChange(gamestate);
-} else if (id === "testtabel") {
-gamestate = "testtabel";
-        onGamestateChange(gamestate);
-}
-});
-} else if (e.keyCode === 38) {//if pressed key = up
-
-$(".selected").each(function () {
-var id = $(this).attr("id");
-        $(this).removeClass("selected");
-        if (id === "play") {
-$("#testtabel").addClass("selected");
-} else if (id === "testtabel") {
-$("#settings").addClass("selected");
-} else if (id === "settings") {
-$("#play").addClass("selected");
-}
-
-});
-} else if (e.keyCode === 40) { //if pressed key = down
-$(".selected").each(function () {
-var id = $(this).attr("id");
-        $(this).removeClass("selected");
-        if (id === "play") {
-$("#settings").addClass("selected");
-} else if (id === "testtabel") {
-$("#play").addClass("selected");
-} else if (id === "settings") {
-$("#testtabel").addClass("selected");
-}
-});
+                if (gamestate === "splash") {
+        if (e.keyCode === 32) {
+        clearBody();
+                //link to menu
+                gamestate = "menu";
+                onGamestateChange(gamestate);
         }
-}
-}
+        } else if (gamestate === "menu") {
+
+        if (e.keyCode === 13) {//if pressed key = enter
+        $(".selected").each(function () {
+        var id = $(this).attr("id");
+                if (id === "play") {
+        gamestate = "play";
+                onGamestateChange(gamestate);
+        } else if (id === "testtabel") {
+        gamestate = "testtabel";
+                onGamestateChange(gamestate);
+        }
+        });
+        } else if (e.keyCode === 38) {//if pressed key = up
+
+        $(".selected").each(function () {
+        var id = $(this).attr("id");
+                $(this).removeClass("selected");
+                if (id === "play") {
+        $("#testtabel").addClass("selected");
+        } else if (id === "testtabel") {
+        $("#settings").addClass("selected");
+        } else if (id === "settings") {
+        $("#play").addClass("selected");
+        }
+
+        });
+        } else if (e.keyCode === 40) { //if pressed key = down
+        $(".selected").each(function () {
+        var id = $(this).attr("id");
+                $(this).removeClass("selected");
+                if (id === "play") {
+        $("#settings").addClass("selected");
+        } else if (id === "testtabel") {
+        $("#play").addClass("selected");
+        } else if (id === "settings") {
+        $("#testtabel").addClass("selected");
+        }
+        });
+        }
+        }
+        }
 
 
 // IN GAME JAVASCRIPT
