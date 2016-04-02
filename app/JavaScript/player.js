@@ -96,7 +96,7 @@ Player.prototype.update = function (canvas, room, socket) {
             //Keycode 38 = the arrowup key, if it is pressed the player, obviously, will move up.
         } else if (value === 38) {
             this.move(-7, canvas);
-        } else if(value === 32) {
+        } else if (value === 32) {
             this.ready = true;
         } else {
             this.move(0, canvas);
@@ -104,7 +104,7 @@ Player.prototype.update = function (canvas, room, socket) {
     }
 
     // console.log(oldReady, this.ready);
-    if(this.position.y !== oldY || this.ready !== oldReady) {
+    if (this.position.y !== oldY || this.ready !== oldReady) {
         socket.emit("playerupdate", {"roomNumber": room, "player": this});
     }
 };
