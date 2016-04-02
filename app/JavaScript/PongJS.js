@@ -8,25 +8,25 @@ var gamestate = "splash";
         var canvasHTML = "<section><span id='header'>Multiplayer - Pong</span><br><form action='http://localhost:8000' id='roomSelector' method='post'><input type='radio' name='room' value='0'> Room 0 <br><input type='radio' name='room' value='1'> Room 1 <br><input type='radio' name='room' value='2'> Room 2 <br><input type='submit' value='Join room'></form></section><section><div class='score-board'><div class='player'><p>0</p></div><div class='player'><p>0</p></div></div><canvas id='myCanvas'></canvas><div id='ready-section'><div class='player'><h3>Player 1:</h3><h3>Not ready</h3></div><div class='player'><h3>Player 2:</h3><h3>Not ready</h3></div><h3>Press space to set yourself to ready</h3></div><h2 id='waiting-label'>Waiting for more players</h2></section><audio autoplay loop><source src='JavaScript/pong.mp3' type='audio/mpeg'></audio>";
         var splashImage = document.getElementById("splash");
 //Navigate to a certain html page
-        function onGamestateChange(gamestate) {
+        function onGamestateChange(gamestate) {//this fuctions lets the users navigate to a new html page
         switch (gamestate) {
-        case "menu":
+        case "menu"://when gamestate is menu, navigate tot the menuHTML page
                 clearBody();
                 document.body.innerHTML = menuHTML;
                 break;
-                case "testtabel":
+                case "testtabel"://when gamestate is testtabel, navigate tot the testHTML page
                 clearBody();
                 document.body.innerHTML = testHTML;
                 break;
-                case "play":
+                case "play"://when gamestate is play, navigate tot the canvasHTML page
                 clearBody();
                 document.body.innerHTML = canvasHTML;
-                play();
+                play(); //this function makes sure the in game javascript is used on the right time.
                 default:
                 break;
         }
         };
-        function clearBody() {
+        function clearBody() {//this function clears the body of the document.
         document.body.innerHTML = "";
         }
 
@@ -45,7 +45,7 @@ clearBody();
 
 if (e.keyCode === 13) { //if pressed key = enter
 $(".selected").each(function() {
-var id = $(this).attr("id");
+var id = $(this).attr("id"); //when enter is pressed look up which item was selected and navigate to that page using the onGameStateChange method.
         if (id === "play") {
 gamestate = "play";
         onGamestateChange(gamestate);
@@ -56,7 +56,7 @@ gamestate = "testtabel";
 });
         } else if (e.keyCode === 38) { //if pressed key = up
 
-$(".selected").each(function() {
+$(".selected").each(function() {//this function selects the list item above the currently selected list item. This is used to navigate through the list.
 var id = $(this).attr("id");
         $(this).removeClass("selected");
         if (id === "play") {
@@ -69,7 +69,7 @@ $("#play").addClass("selected");
 
 });
         } else if (e.keyCode === 40) { //if pressed key = down
-$(".selected").each(function() {
+$(".selected").each(function() {//this function selects the list item under the currently selected list item. This is used to navigate through the list.
 var id = $(this).attr("id");
         $(this).removeClass("selected");
         if (id === "play") {
