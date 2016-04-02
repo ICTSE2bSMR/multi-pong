@@ -356,6 +356,7 @@ function play() {
             } else {
                 instance.player1 = Player.revive(data.instance.player1);
                 instance.player2 = player;
+                player.position.x = canvas.width - player.size.width * 2;
                 ball = Projectile.revive(data.instance.projectile);
             }
 			//The ball is drawn in the middle of the canvas.
