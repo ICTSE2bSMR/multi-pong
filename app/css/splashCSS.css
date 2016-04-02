@@ -1,0 +1,92 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 16-mrt-2016, 15:12:02
+    Author     : Mark
+*/
+
+
+#splash{
+    width: 98%;
+    height: 100%;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+
+}
+
+#header{
+    text-align: center;
+    font-family: "Orbitron", monospace;
+    font-size: 3em;
+    margin-bottom: 40px;
+    display: block;
+
+}
+
+#info{
+    font-family: "Inconsolata", monospace;
+    font-size: 2em;
+}
+
+
+#splash_img{
+    width: 50%;
+}
+
+.selected{
+    border: solid gold 2px;
+    clear: both;
+}
+
+.menu_list{
+    margin: 0 auto;
+    width: 300px;
+    display: block;
+    list-style: none;
+}
+#play,#settings,#testtabel{
+    font-family: "Orbitron", monospace;
+    padding:10px;
+    width: 200px;
+}
+
+#lobbies{
+    margin: 0 auto;
+    display: block;
+    font-family: "Inconsolata", monospace;
+    list-style: none;
+    text-align: center;
+    width: 200px;
+}
+
+.lobby{
+    width: 150px;
+    border: 1px solid black;
+}
+
+#lobcreate{ 
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    width: 50%;
+    float: left;
+}
+
+#createform{
+    margin: 0 auto;
+    display: block;
+    width: 300px;
+}
+
+form{
+    width: 200px;
+}
+
+#lobby_div{
+    width: 48%;
+    float: left;
+}
