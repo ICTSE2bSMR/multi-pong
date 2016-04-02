@@ -1,259 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Node</title>
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-    <link href="style.css" rel="stylesheet" type="text/css"/>
-</head>
-<body>
-<section>
-    <span id="header">Multiplayer - Pong</span><br>
-    <form action="http://localhost:8000" id="roomSelector" method="post">
-        <input type="radio" name="room" value="0"> Room 0 <br>
-        <input type="radio" name="room" value="1"> Room 1 <br>
-        <input type="radio" name="room" value="2"> Room 2 <br>
-        <input type="submit" value="Join room">
-    </form>
-</section>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Multiplayer - Pong</title>
+        <meta charset="windows-1252">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+        <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+        <script src="JavaScript/PongJS.js" type="text/javascript"></script>
+        <link href='https://fonts.googleapis.com/css?family=Orbitron:500' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href="splashCSS.css" rel="stylesheet" type="text/css"/>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <link href="Test/TestStijl.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
 
-<section>
-    <div class="score-board">
-        <div class="player">
-            <p>0</p>
+        <div id="splash">
+            <span id="header">Multiplayer - Pong</span><br>
+            <img id="splash_img" src="images/splashPong.png" alt="splash"><br>
+            <span id="info">Press space to continue...</span>
         </div>
-        <div class="player">
-            <p>0</p>
-        </div>
-    </div>
-    <canvas id="myCanvas"></canvas>
-
-    <div id="ready-section">
-        <div class="player">
-            <h3>Player 1:</h3>
-            <h3>Not ready</h3>
-        </div>
-        <div class="player">
-            <h3>Player 2:</h3>
-            <h3>Not ready</h3>
-        </div>
-        <h3>Press space to set yourself to ready</h3>
-    </div>
-    <h2 id="waiting-label">Waiting for more players</h2>
-</section>
-
-<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-<script src="player.js"></script>
-<script src="projectile.js"></script>
-<script>
-    var scoreboard = document.getElementsByClassName("score-board")[0],
-            playerScores = scoreboard.getElementsByClassName("player"),
-            player1Score = playerScores[0].getElementsByTagName('p')[0],
-            player2Score = playerScores[1].getElementsByTagName('p')[0];
-    var readySection = document.getElementById("ready-section"),
-            player1Ready = readySection.getElementsByClassName("player")[0].getElementsByTagName("h3")[1],
-            player2Ready = readySection.getElementsByClassName("player")[1].getElementsByTagName("h3")[1];
-
-    var waitingLabel = document.getElementById("waiting-label");
-
-    var socket = io.connect("http://localhost:8000");
-
-    var instance = {};
-    var room;
-    var width = $("#myCanvas").css("width").split("p");
-    var canvas = document.getElementById("myCanvas");
-    canvas.width = width[0];
-    canvas.height = width[0];
-
-    var playerheight = width[0] / 10;
-    var y = (width[0] / 2) - (playerheight / 2);
-    var ball = new Projectile(10, {"dx": 3, "dy": 2}, {"x": 100, "y": 100});
-
-    var player = new Player({"x": 10, "y": y}, {"width": 10, "height": playerheight}, "#FF0000", 20);
-
-    $("#roomSelector").submit(function (e) {
-        e.preventDefault();
-        var url = $(this).attr("action"),
-                method = $(this).attr("method"),
-                selected = this.querySelector("input[name='room']:checked");
-
-        if (instance.player1 !== undefined) {
-            instance = {};
-            socket.emit("disconnecting", {"roomNumber": room, "player": player});
-            player1Score.innerHTML = 0;
-            player2Score.innerHTML = 0;
-        }
-
-        $.ajax({
-            url: url,
-            type: method,
-            data: "room=" + selected.value,
-            success: function (data) {
-                room = selected.value;
-                init();
-            }
-        });
-    });
-
-    $(window).on('resize', function (e) {
-        // TODO resize projectile and players etc.
-    });
-
-    function init() {
-        socket.emit("newplayer", room);
-    }
 
 
-    if (socket !== undefined) {
-
-        /**
-         * Checks if we have to create a new instance of the game, or if there's already an instance present on the server.
-         * If there's an instance present on the server, it adds the entities from that instance.
-         */
-        socket.on("servernewplayer", function (data) {
-//            console.log("SERVERNEWPLAYER", data);
-            if (data.instance === null) {
-                // This means that we have to create a new game
-                instance.player1 = player;
-                player.position.x = player.size.width;
-
-            } else {
-                instance.player1 = Player.revive(data.instance.player1);
-                instance.player2 = player;
-                player.position.x = canvas.width - player.size.width;
-                ball = Projectile.revive(data.instance.projectile);
-            }
-
-            ball.position = {"x": canvas.width / 2, "y": canvas.height / 2};
-            ball.speed = {"dx": 3, "dy": 2};
-            player.id = data.id;
-            player.score = 0;
-            instance.projectile = ball;
-
-            // Make sure the other players gets us as well.
-            socket.emit("clientmessage", {"roomNumber": room, "instance": instance});
-
-            requestAnimationFrame(mainLoop);
-        });
-
-        /**
-         * We receive this message when player2 sends a clientmessage to the server.
-         */
-        socket.on("servermessage", function (data) {
-            instance.player2 = Player.revive(data.instance.player2);
-        });
-
-        /**
-         * Update the players
-         */
-        socket.on("playerupdatemessage", function (data) {
-            if (instance.player1 !== undefined && instance.player2 !== undefined) {
-                if (data.player1.id !== player.id) {
-                    instance.player1.position = data.player1.position;
-                    instance.player1.score = data.player1.score;
-                    instance.player1.ready = data.player1.ready;
-                } else {
-                    instance.player2.position = data.player2.position;
-                    instance.player2.score = data.player2.score;
-                    instance.player2.ready = data.player2.ready;
-                }
-            }
-        });
-
-        /**
-         * Updates the projectile.
-         * Checks if the difference is greater than 2, as to not create unnecessary updates.
-         */
-        socket.on("ballupdatemessage", function (data) {
-
-            if (data.projectile !== undefined && ball.position.x - data.projectile.position.x >= 2 &&
-                    ball.position.y - data.projectile.position.y >= 2) {
-                ball.position = data.projectile.position;
-            }
-        });
-
-        socket.on("playerdisconnectmessage", function (data) {
-            if (data.player1 === undefined)
-                instance.player1 = undefined;
-            else if (data.player2 === undefined)
-                instance.player2 = undefined;
-        });
-
-    }
-
-    function updateLabels() {
-        if (instance.player1 !== undefined || instance.player2 !== undefined) {
-            waitingLabel.style.display = "none";
-        }
-        if (instance.player1 === undefined || instance.player2 === undefined)
-            waitingLabel.style.display = "block";
-
-        if (instance.player1 !== undefined) {
-            if (instance.player1.ready) {
-                player1Ready.style.color = "green";
-                player1Ready.innerHTML = "Ready";
-            } else {
-                player1Ready.style.color = "red";
-                player1Ready.innerHTML = "Not ready";
-            }
-        }
-        if (instance.player2 !== undefined) {
-            if (instance.player2.ready) {
-                player2Ready.style.color = "green";
-                player2Ready.innerHTML = "Ready";
-            } else {
-                player2Ready.style.color = "red";
-                player2Ready.innerHTML = "Not ready";
-            }
-        }
-    }
-
-    function mainLoop() {
-        var ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        updateLabels();
-
-        if (((instance.player1 !== null && instance.player1 !== undefined) &&
-                (instance.player2 !== null && instance.player2 !== undefined)) &&
-                (instance.player1.ready && instance.player2.ready)) {
-            ball.update(canvas, [instance.player1, instance.player2], room, socket);
-
-            // Update scores if needed
-            if (parseInt(player1Score.innerHTML) < instance.player1.score)
-                player1Score.innerHTML = instance.player1.score;
-            if (parseInt(player2Score.innerHTML) < instance.player2.score)
-                player2Score.innerHTML = instance.player2.score;
-        }
-
-        player.update(canvas, room, socket);
-
-        // Draw entities on screen.
-        if (instance.player1 !== null && instance.player1 !== undefined)
-            instance.player1.draw(ctx);
-
-        if (instance.player2 !== null && instance.player2 !== undefined)
-            instance.player2.draw(ctx);
-
-        if (instance.projectile !== null && instance.projectile !== undefined)
-            instance.projectile.draw(ctx);
-
-        // Call gameloop again
-        requestAnimationFrame(mainLoop);
-    }
-
-
-    $(window).on('beforeunload', function () {
-        for (var o in instance) {
-            if (o.id === player.id) {
-                o = null;
-            }
-        }
-        if (socket !== undefined) {
-            socket.close();
-        }
-    });
-
-</script>
-</body>
+    </body>
 </html>
